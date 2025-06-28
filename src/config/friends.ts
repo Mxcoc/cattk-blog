@@ -13,7 +13,7 @@ export type FriendItemType = {
 
 export const friends: Array<FriendItemType> = [
   {
-    name: 'Corey Chiu',
-    link: { href: 'https://coreychiu.com' },
+    name: 'Cattk's Blog',
+    link: { href: 'https://cattk.com' },
   },
 ]

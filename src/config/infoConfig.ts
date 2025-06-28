@@ -7,11 +7,11 @@ export * from './activity'
 
 
 // personal info
-export const name = 'Corey Chiu'
-export const headline = 'Software engineer, Full-Stack web developer, and indie hacker.'
-export const introduction = 'I’m Corey, a software engineer based in Shenzhen, China. I like coding, and building interesting things'
-export const email = 'xxx@gmail.com'
-export const githubUsername = 'iamcorey'
+export const name = "Cattk's Blog"
+export const headline = '业余无线电爱好者,Software engineer, Full-Stack web developer, and indie hacker.'
+export const introduction = '吃枣药丸'
+export const email = 'cattk@cattk.com'
+export const githubUsername = 'Mxcoc'
 
 // about page
 export const aboutMeHeadline = "I'm Corey Chiu, a software engineer based in Shenzhen, China."

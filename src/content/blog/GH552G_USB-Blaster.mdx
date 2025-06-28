@@ -1,0 +1,72 @@
+---
+author: Mxcoc
+title: 给基于 GH552G 的 USB-Blaster 编程器重新刷写固件
+description: 给基于 GH552G 的 USB-Blaster 编程器重新刷写固件
+date: 2024-06-04
+slug: GH552G_USB-Blaster
+image: mx105-rotated.jpg
+categories:
+    - 瞎折腾
+tags:
+    - GH552
+---
+
+在前段时间制作 Wolf TRX(狼电台) 时，需要一个 USB Blaster 编程器给 FPGA 芯片烧录程序，于是在某宝购买了一个，收到货后,连接电脑可以识别出来，但不能正常使用，经过多次尝试还是不能使用，看起来硬件没有问题，后面就放弃了。
+
+直到今天看到了一篇文章，可以给这个编程器重新刷程序而复活，下面来试一试。
+
+<center class ='img'>
+<img title="某宝购买的编程器拆掉外壳图片" src="https://img.cattk.com/20241102/AQAD_7sxG4XRAAFXfg.jpg" width="65%">
+</center>
+<center>(某宝购买的编程器拆掉外壳图片)</center>
+<br>
+<center class ='img'>
+<img title="正面-使用的芯片是GH552G" src="https://img.cattk.com/20241102/AQAD_rsxG4XRAAFXfg.jpg" width="65%">
+</center>
+<center>(正面-使用的芯片是GH552G)</center>
+<br>
+<center class ='img'>
+<img title="背面" src="https://img.cattk.com/20241102/AQAD_bsxG4XRAAFXfg.jpg" width="65%">
+</center>
+<center>(背面)</center>
+<br>
+
+### 1、首先需要下载 WCHISPTool 软件和要刷入的固件：
+
+WCHISPTool 下载链接：[https://www.dropbox.com/scl/fi/174bpr6hi83atrn8znhzi/WCHISPTool_Setup.exe?rlkey=rdyjww4dxrcxmkmlpldggqyfe&dl=0](https://www.dropbox.com/scl/fi/174bpr6hi83atrn8znhzi/WCHISPTool_Setup.exe?rlkey=rdyjww4dxrcxmkmlpldggqyfe&dl=0)
+
+固件下载链接：[https://www.dropbox.com/scl/fi/htm29q7aygb08amn6c5kz/CH552_Blaster_v22.2.27.hex?rlkey=rj66oquduqwv5rr5w5qe68s1s&dl=0](https://www.dropbox.com/scl/fi/htm29q7aygb08amn6c5kz/CH552_Blaster_v22.2.27.hex?rlkey=rj66oquduqwv5rr5w5qe68s1s&dl=0)
+
+### 2、安装后并打开 WCHISPTool 软件如下图：
+
+<center class ='img'>
+<img title="" src="https://img.cattk.com/20241102/AQAD_LsxG4XRAAFXfg.jpg" width="100%">
+</center>
+
+**a，在右侧选择 E8051 USB 系列 CH54x/CH55x**
+
+**b，在左侧芯片系列选择 CH55x ,芯片信号选择 CH552**
+
+**c，在 下载文件 栏点击选择下载的固件文件并在勾选**
+
+### 3、用镊子或导线短接 D+ 和 3V3引脚（如下图示），将USB连接到电脑，然后立即松开短接点（否则读取 USB 设备时会出错）
+
+<center class ='img'>
+<img title="" src="https://img.cattk.com/20241102/AQAD-7sxG4XRAAFXfg.jpg" width="70%">
+</center>
+
+### 4、WCHISPTool 软件会识别到编程器并显示在 设备列表 一栏中，点击 下载 按钮即可。也可以点击 验证 按钮来验证固件的正确性。
+
+### 5、到此，就完成了给 USB Blaster 编程器刷写固件，可以正常使用它给 FPGA 芯片烧录程序了。
+
+<center class ='img'>
+<img title="" src="https://img.cattk.com/20241102/AQAD-rsxG4XRAAFXfg.jpg" width="70%">
+</center>
+<br>
+<center> 完成结束！</center>
+
+>参考文章:
+https://ua3reo.ru/proshivka-kitajskogo-usb-blaster-na-osnove-ch552g
+
+>固件来源:
+UA3REO （[ua3reo.ru](https://ua3reo.ru)）

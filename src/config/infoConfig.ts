@@ -40,7 +40,7 @@ export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'X',
     icon: 'x',
-    href: 'https://x.com/_Cattk_',
+    href: 'https://x.com/#',
     external: true
   },
   {

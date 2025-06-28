@@ -7,8 +7,8 @@ export * from './activity'
 
 
 // personal info
-export const name = "Cattk's Blog"
-export const headline = '业余无线电爱好者,Software engineer, Full-Stack web developer, and indie hacker.'
+export const name = "Cattk"
+export const headline = 'Ham Radio,hacker.'
 export const introduction = '吃枣药丸'
 export const email = 'cattk@cattk.com'
 export const githubUsername = 'Mxcoc'
@@ -44,27 +44,9 @@ export const socialLinks: Array<SocialLinkType> = [
     external: true
   },
   {
-    name: 'Bsky',
-    icon: 'bsky',
-    href: 'https://bsky.app/profile/coreychiu.com',
-    external: true
-  },
-  {
-    name: 'Jike',
-    icon: 'pill',
-    href: 'https://okjk.co/P7c1zU',
-    external: true
-  },
-  {
     name: 'Github',
     icon: 'github',
     href: 'https://github.com/iamcorey',
-    external: true
-  },
-  {
-    name: 'Wechat',
-    icon: 'wechat',
-    href: 'https://mp.weixin.qq.com/s/DxnRgqNfgzXIhqj6w_x0dQ',
     external: true
   },
   {
@@ -72,39 +54,24 @@ export const socialLinks: Array<SocialLinkType> = [
     icon: 'discord',
     href: 'https://discord.gg/xTxRg3Ej',
     external: true
-  },
-  {
-    name: 'Ko-fi',
-    icon: 'coffee',
-    href: 'https://ko-fi.com/coreychiu',
-    external: true
   }
 ]
 
 // https://simpleicons.org/
 export const techIcons = [
-  "typescript",
   "javascript",
-  "supabase",
   "cloudflare",
   "java",
-  "oracle",
   "mysql",
-  "react",
-  "nodedotjs",
-  "nextdotjs",
-  "prisma",
   "postgresql",
   "nginx",
   "vercel",
   "docker",
   "git",
   "github",
-  "visualstudiocode",
-  "androidstudio",
   "ios",
   "apple",
-  "wechat"
+  "htmx"
 ];
 
 

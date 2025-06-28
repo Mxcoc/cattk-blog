@@ -8,7 +8,7 @@ export * from './activity'
 
 // personal info
 export const name = "Cattk"
-export const headline = 'Ham Radio,hacker.'
+export const headline = 'Ham Radio, Electronic enthusiast.'
 export const introduction = '吃枣药丸'
 export const email = 'cattk@cattk.com'
 export const githubUsername = 'Mxcoc'
@@ -40,19 +40,13 @@ export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'X',
     icon: 'x',
-    href: 'https://x.com/realcoreychiu',
+    href: 'https://x.com/_Cattk_',
     external: true
   },
   {
     name: 'Github',
     icon: 'github',
     href: 'https://github.com/iamcorey',
-    external: true
-  },
-  {
-    name: 'Discord',
-    icon: 'discord',
-    href: 'https://discord.gg/xTxRg3Ej',
     external: true
   }
 ]

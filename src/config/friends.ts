@@ -16,4 +16,8 @@ export const friends: Array<FriendItemType> = [
     name: "Cattk's Blog",
     link: { href: 'https://cattk.com' },
   },
+  {
+    name: "Cattk",
+    link: { href: 'https://blog.cattk.com' },
+  }
 ]

@@ -8,8 +8,8 @@ export * from './activity'
 
 // personal info
 export const name = "Cattk"
-export const headline = 'Ham Radio, Electronic enthusiast.'
-export const introduction = '吃枣药丸'
+export const headline = '吃枣药丸.'
+export const introduction = 'Cattk | 业余无线电 HAM | 短波通信玩家 | 电子 DIY 爱好者。用天线捕捉远方的故事，用焊烙铁筑造心中的奇思。'
 export const email = 'cattk@cattk.com'
 export const githubUsername = 'Mxcoc'
 

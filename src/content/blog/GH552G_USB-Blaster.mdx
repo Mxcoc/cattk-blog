@@ -1,65 +1,73 @@
 ---
-title: '给基于 GH552G 的 USB-Blaster 编程器重新刷写固件'
-description: '给基于 GH552G 的 USB-Blaster 编程器重新刷写固件'
+title: '为基于 CH552G 的 USB-Blaster 编程器刷写固件'
+description: '记录一次修复淘宝购买的基于 CH552G 芯片的 USB-Blaster 编程器的过程，通过 WCHISPTool 重新刷写固件使其恢复正常功能。'
 date: '2025-06-29'
 ---
 
-在前段时间制作 Wolf TRX(狼电台) 时，需要一个 USB Blaster 编程器给 FPGA 芯片烧录程序，于是在某宝购买了一个，收到货后,连接电脑可以识别出来，但不能正常使用，经过多次尝试还是不能使用，看起来硬件没有问题，后面就放弃了。
+import { Image } from '@astrojs/image/components'; // 这是一个示例，根据你的框架选择合适的图片组件
 
-直到今天看到了一篇文章，可以给这个编程器重新刷程序而复活，下面来试一试。
+前段时间制作 Wolf TRX (狼电台) 时，需要一个 USB Blaster 编程器给 FPGA 芯片烧录程序。我在淘宝上买了一个，收到后连接电脑虽能识别，但始终无法正常工作。多次尝试无果后，我一度以为是硬件问题，便放弃了。
 
-<center class ='img'>
-<img title="某宝购买的编程器拆掉外壳图片" src="https://img.cattk.com/20241102/AQAD_7sxG4XRAAFXfg.jpg" width="65%" />
-</center>
-<center>(某宝购买的编程器拆掉外壳图片)</center>
-<br>
-<center class ='img'>
-<img title="正面-使用的芯片是GH552G" src="https://img.cattk.com/20241102/AQAD_rsxG4XRAAFXfg.jpg" width="65%" />
-</center>
-<center>(正面-使用的芯片是GH552G)</center>
-<br>
-<center class ='img'>
-<img title="背面" src="https://img.cattk.com/20241102/AQAD_bsxG4XRAAFXfg.jpg" width="65%" />
-</center>
-<center>(背面)</center>
-<br>
+直到今天，我偶然看到一篇文章，介绍了如何通过重刷固件来“复活”这种编程器。于是我决定动手一试。
 
-### 1、首先需要下载 WCHISPTool 软件和要刷入的固件：
+### 编程器概览
 
-WCHISPTool 下载链接：[https://www.dropbox.com/scl/fi/174bpr6hi83atrn8znhzi/WCHISPTool_Setup.exe?rlkey=rdyjww4dxrcxmkmlpldggqyfe&dl=0](https://www.dropbox.com/scl/fi/174bpr6hi83atrn8znhzi/WCHISPTool_Setup.exe?rlkey=rdyjww4dxrcxmkmlpldggqyfe&dl=0)
+这是我购买的编程器拆开外壳后的样子，可以看到核心芯片是 **CH552G**。
 
-固件下载链接：[https://www.dropbox.com/scl/fi/htm29q7aygb08amn6c5kz/CH552_Blaster_v22.2.27.hex?rlkey=rj66oquduqwv5rr5w5qe68s1s&dl=0](https://www.dropbox.com/scl/fi/htm29q7aygb08amn6c5kz/CH552_Blaster_v22.2.27.hex?rlkey=rj66oquduqwv5rr5w5qe68s1s&dl=0)
+![某宝购买的编程器拆掉外壳后的照片](https://img.cattk.com/20241102/AQAD_7sxG4XRAAFXfg.jpg "编程器拆解图")
+*某宝购买的编程器拆掉外壳图片*
 
-### 2、安装后并打开 WCHISPTool 软件如下图：
+<br />
 
-<center class ='img'>
-<img title="" src="https://img.cattk.com/20241102/AQAD_LsxG4XRAAFXfg.jpg" width="100%" />
-</center>
+![编程器正面，芯片型号为 GH552G](https://img.cattk.com/20241102/AQAD_rsxG4XRAAFXfg.jpg "正面-使用的芯片是GH552G")
+*正面-使用的芯片是 GH552G*
 
-**a，在右侧选择 E8051 USB 系列 CH54x/CH55x**
+<br />
 
-**b，在左侧芯片系列选择 CH55x ,芯片信号选择 CH552**
+![编程器背面电路板](https://img.cattk.com/20241102/AQAD_bsxG4XRAAFXfg.jpg "背面")
+*背面*
 
-**c，在 下载文件 栏点击选择下载的固件文件并在勾选**
+### 1. 下载所需工具和固件
 
-### 3、用镊子或导线短接 D+ 和 3V3引脚（如下图示），将USB连接到电脑，然后立即松开短接点（否则读取 USB 设备时会出错）
+首先，你需要下载沁恒 (WCH) 官方的烧录工具 **WCHISPTool** 和适用于此编程器的固件。
 
-<center class ='img'>
-<img title="" src="https://img.cattk.com/20241102/AQAD-7sxG4XRAAFXfg.jpg" width="70%" />
-</center>
+- **WCHISPTool 下载链接:** [WCHISPTool_Setup.exe](https://www.dropbox.com/scl/fi/174bpr6hi83atrn8znhzi/WCHISPTool_Setup.exe?rlkey=rdyjww4dxrcxmkmlpldggqyfe&dl=0)
+- **固件下载链接:** [CH552_Blaster_v22.2.27.hex](https://www.dropbox.com/scl/fi/htm29q7aygb08amn6c5kz/CH552_Blaster_v22.2.27.hex?rlkey=rj66oquduqwv5rr5w5qe68s1s&dl=0)
 
-### 4、WCHISPTool 软件会识别到编程器并显示在 设备列表 一栏中，点击 下载 按钮即可。也可以点击 验证 按钮来验证固件的正确性。
+### 2. 配置 WCHISPTool 软件
 
-### 5、到此，就完成了给 USB Blaster 编程器刷写固件，可以正常使用它给 FPGA 芯片烧录程序了。
+安装并打开 **WCHISPTool**，按照下图进行配置：
 
-<center class ='img'>
-<img title="" src="https://img.cattk.com/20241102/AQAD-rsxG4XRAAFXfg.jpg" width="70%" />
-</center>
-<br>
-<center> 完成结束！</center>
+![WCHISPTool 软件主界面截图](https://img.cattk.com/20241102/AQAD_LsxG4XRAAFXfg.jpg "WCHISPTool 软件界面")
 
->参考文章:
-https://ua3reo.ru/proshivka-kitajskogo-usb-blaster-na-osnove-ch552g
+- **a.** 在右侧的 **USB 系列** 中，选择 **E8051 USB 系列 CH54x/CH55x**。
+- **b.** 在左侧的 **芯片系列** 中，选择 **CH55x**，芯片型号选择 **CH552**。
+- **c.** 在 **下载文件** 栏，点击“选择”按钮加载你刚刚下载的 `.hex` 固件文件，并确保勾选该文件。
 
->固件来源:
-UA3REO （[ua3reo.ru](https://ua3reo.ru)）
+### 3. 使编程器进入下载模式
+
+这是关键的一步。
+
+用镊子或导线短接板上的 **D+** 和 **3V3** 两个引脚（如下图所示）。保持短接状态，将编程器的 USB 接口连接到电脑。电脑识别到 USB 设备后，**立即松开短接点**（否则软件在枚举设备时会出错）。
+
+![用镊子短接 D+ 和 3V3 引脚](https://img.cattk.com/20241102/AQAD-7sxG4XRAAFXfg.jpg "短接 D+ 和 3V3 引脚")
+
+### 4. 下载并验证固件
+
+操作正确的话，**WCHISPTool** 软件的 **设备列表** 中会识别到你的编程器。
+
+- 点击 **下载** 按钮，软件会将固件写入芯片。
+- （可选）下载完成后，可以点击 **验证** 按钮，确保固件已正确写入。
+
+### 5. 完成
+
+至此，你的 USB Blaster 编程器固件已经成功刷写。现在它应该可以被 Quartus 等软件正常识别，并用于给 FPGA 芯片烧录程序了。
+
+![Quartus 软件成功识别到 USB-Blaster](https://img.cattk.com/20241102/AQAD-rsxG4XRAAFXfg.jpg "Quartus 成功识别")
+
+大功告成！
+
+> **参考资料:**
+>
+> - **原文链接:** [https://ua3reo.ru/proshivka-kitajskogo-usb-blaster-na-osnove-ch552g](https://ua3reo.ru/proshivka-kitajskogo-usb-blaster-na-osnove-ch552g)
+> - **固件来源:** UA3REO ([ua3reo.ru](https://ua3reo.ru))

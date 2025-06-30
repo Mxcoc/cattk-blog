@@ -1,4 +1,3 @@
-// [最终重构设计版本]
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
@@ -10,46 +9,39 @@ interface Memo {
   createdAt: string; 
 }
 
+// *** 核心修正：将 limit 定义在顶层，使其在 getMemos 和 MemosPage 组件中都可访问 ***
+const limit = 10;
+
 /**
  * 健壮的 Memos 数据获取函数
  * @param page - 需要获取的页码
  * @returns 返回一个备忘录数组 Promise，失败时返回空数组
  */
 async function getMemos(page: number): Promise<Memo[]> {
-  // 1. 在函数开头集中读取和校验环境变量
   const apiUrl = process.env.MEMOS_API_URL;
   const accessToken = process.env.MEMOS_ACCESS_TOKEN;
   
-  // 如果关键环境变量缺失，立即抛出错误，这会在Vercel构建或运行时清晰地报错
   if (!apiUrl || !accessToken) {
     console.error('[Configuration Error] MEMOS_API_URL or MEMOS_ACCESS_TOKEN is not set in the production environment.');
     throw new Error('Server configuration is incomplete.');
   }
 
-  // 2. 准备请求参数和构建URL
-  const limit = 10;
   const offset = (page - 1) * limit;
-  // 使用正确的复数形式 `memos`
   const fullUrl = `${apiUrl}/api/v1/memos?limit=${limit}&offset=${offset}`;
 
-  // 3. 执行 fetch 并进行周全的错误处理
   try {
     const res = await fetch(fullUrl, {
-      // 推荐为生产环境的fetch请求设置缓存策略
-      next: { revalidate: 3600 }, // 1小时
+      next: { revalidate: 3600 },
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
     });
 
-    // Case 1: API 响应不成功 (如 401, 404, 500 等)
     if (!res.ok) {
       console.error(`[API Response Error] Request failed with status: ${res.status}. URL: ${fullUrl}`);
-      // 返回空数组，让页面优雅降级
       return [];
     }
 
-    // Case 2: API 响应成功，但返回内容可能不是有效的JSON
     try {
       const data: Memo[] = await res.json();
       return data;
@@ -59,14 +51,12 @@ async function getMemos(page: number): Promise<Memo[]> {
     }
 
   } catch (networkError) {
-    // Case 3: 发生网络层面的致命错误 (如 DNS, acls)
     console.error(`[Fatal Fetch Error] Network request failed. URL: ${fullUrl}`, networkError);
-    // 返回空数组，页面降级
     return [];
   }
 }
 
-// 页面主组件 (这部分逻辑已经很健壮，无需修改)
+// 页面主组件
 export default async function MemosPage({
   searchParams,
 }: {
@@ -75,7 +65,6 @@ export default async function MemosPage({
   };
 }) {
   const currentPage = Number(searchParams?.page) || 1;
-  // 调用我们健壮的 getMemos 函数
   const memos = await getMemos(currentPage);
 
   return (
@@ -120,6 +109,7 @@ export default async function MemosPage({
           )}
         </div>
         <div>
+          {/* 现在这里的 `limit` 可以被正确访问到了 */}
           {memos.length === limit && (
             <Button asChild variant="outline">
               <Link href={`/memos?page=${currentPage + 1}`}>下一页 →</Link>

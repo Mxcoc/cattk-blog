@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-// 定义清晰的数据结构
 interface Memo {
   id: number;
   content: string;
@@ -9,14 +8,9 @@ interface Memo {
   createdAt: string; 
 }
 
-// *** 核心修正：将 limit 定义在顶层，使其在 getMemos 和 MemosPage 组件中都可访问 ***
 const limit = 10;
 
-/**
- * 健壮的 Memos 数据获取函数
- * @param page - 需要获取的页码
- * @returns 返回一个备忘录数组 Promise，失败时返回空数组
- */
+// [t.map 错误最终修正版]
 async function getMemos(page: number): Promise<Memo[]> {
   const apiUrl = process.env.MEMOS_API_URL;
   const accessToken = process.env.MEMOS_ACCESS_TOKEN;
@@ -41,22 +35,36 @@ async function getMemos(page: number): Promise<Memo[]> {
       console.error(`[API Response Error] Request failed with status: ${res.status}. URL: ${fullUrl}`);
       return [];
     }
+    
+    // 尝试解析JSON
+    const responseData = await res.json();
 
-    try {
-      const data: Memo[] = await res.json();
-      return data;
-    } catch (jsonError) {
-      console.error(`[API JSON Parse Error] Failed to parse JSON response. URL: ${fullUrl}`, jsonError);
-      return [];
+    // 为了调试，我们在Vercel日志中打印出API返回的完整数据结构
+    console.log('[API RESPONSE RAW DATA]', JSON.stringify(responseData, null, 2));
+
+    // *** 核心修正：智能处理数据结构 ***
+    // Memos API v0.15.0 之后，返回的数据结构是 { data: [...] }
+    // 我们检查这个结构，并返回里面的数组
+    if (responseData && Array.isArray(responseData.data)) {
+      return responseData.data;
     }
+    
+    // 兼容旧版 API 或者其他直接返回数组的情况
+    if (Array.isArray(responseData)) {
+      return responseData;
+    }
+    
+    // 如果结构不符合预期，打印错误并返回空数组，防止页面崩溃
+    console.error('[API Structure Error] The API response is not a recognized format.');
+    return [];
 
-  } catch (networkError) {
-    console.error(`[Fatal Fetch Error] Network request failed. URL: ${fullUrl}`, networkError);
+  } catch (error) {
+    console.error(`[Fatal Fetch Error] Network or JSON parsing failed. URL: ${fullUrl}`, error);
     return [];
   }
 }
 
-// 页面主组件
+// 页面主组件 (无需修改)
 export default async function MemosPage({
   searchParams,
 }: {
@@ -109,7 +117,6 @@ export default async function MemosPage({
           )}
         </div>
         <div>
-          {/* 现在这里的 `limit` 可以被正确访问到了 */}
           {memos.length === limit && (
             <Button asChild variant="outline">
               <Link href={`/memos?page=${currentPage + 1}`}>下一页 →</Link>

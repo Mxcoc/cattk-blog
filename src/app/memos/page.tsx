@@ -8,36 +8,43 @@ interface Memo {
   createdAt: string; 
 }
 
-// [最终正确版本]
+// [最终授权版本]
 async function getMemos(page: number): Promise<Memo[]> {
-  // 1. 读取正确的 Memos API 根地址
   const apiUrl = process.env.MEMOS_API_URL;
+  // 1. 读取新的访问令牌
+  const accessToken = process.env.MEMOS_ACCESS_TOKEN;
   
-  if (!apiUrl) {
-    throw new Error('MEMOS_API_URL is not defined in .env.local. 请设置您Memos服务的完整URL (例如 https://memos.example.com) 并重启服务器。');
+  if (!apiUrl || !accessToken) {
+    throw new Error('MEMOS_API_URL or MEMOS_ACCESS_TOKEN is not defined in .env.local.');
   }
 
   const limit = 10;
   const offset = (page - 1) * limit;
-
-  // 2. 将 Memos API 根地址和 API 路径拼接
   const fullUrl = `${apiUrl}/api/v1/memo?limit=${limit}&offset=${offset}`;
 
   try {
+    // 2. 在 fetch 请求中添加 headers 和 Authorization
     const res = await fetch(fullUrl, {
-      next: { revalidate: 3600 }, 
+      next: { revalidate: 3600 },
+      headers: {
+        // 'Bearer '后面有一个空格，请注意
+        'Authorization': `Bearer ${accessToken}`,
+      },
     });
 
     if (!res.ok) {
+      // 如果令牌错误或过期，API 可能会返回 401 Unauthorized 错误
+      console.error(`API request failed with status: ${res.status}`);
       return []; 
     }
     return res.json();
   } catch (error) {
+    console.error('Fetch request failed:', error);
     return [];
   }
 }
 
-// 页面主组件（这部分无需修改）
+// 页面主组件（无需修改）
 export default async function MemosPage({
   searchParams,
 }: {

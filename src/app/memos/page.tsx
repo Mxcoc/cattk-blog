@@ -1,16 +1,25 @@
 import Link from 'next/link';
+import Image from 'next/image'; // 導入 Next.js 的 Image 元件以優化圖片
 import { Button } from '@/components/ui/button';
 
+// 定義資源和備忘錄的資料結構
+interface Resource {
+  name: string;
+  type: string;
+  filename: string;
+}
+
 interface Memo {
-  id: number; // 虽然API返回的是name，但为了简化，我们继续用之前的结构
+  id: string;
   content: string;
   creatorName: string;
-  createTime: string; // API返回的是createTime，和我们之前的定义匹配
+  createTime: string;
+  resources: Resource[];
 }
 
 const limit = 10;
 
-// [最终版 - 适配真实API结构]
+// [功能完整最終版 - 含圖片顯示]
 async function getMemos(page: number): Promise<Memo[]> {
   const apiUrl = process.env.MEMOS_API_URL;
   const accessToken = process.env.MEMOS_ACCESS_TOKEN;
@@ -21,7 +30,9 @@ async function getMemos(page: number): Promise<Memo[]> {
   }
 
   const offset = (page - 1) * limit;
-  const fullUrl = `${apiUrl}/api/v1/memos?limit=${limit}&offset=${offset}`;
+  const filter = 'visibility = "PUBLIC"';
+  const encodedFilter = encodeURIComponent(filter);
+  const fullUrl = `${apiUrl}/api/v1/memos?limit=${limit}&offset=${offset}&filter=${encodedFilter}`;
 
   try {
     const res = await fetch(fullUrl, {
@@ -38,14 +49,14 @@ async function getMemos(page: number): Promise<Memo[]> {
     
     const responseData = await res.json();
 
-    // *** 核心修正：直接从 responseData.memos 中获取数组 ***
     if (responseData && Array.isArray(responseData.memos)) {
-      // 这里的 .map 是为了适配我们前端的 Memo 接口，如果不需要可以简化
       return responseData.memos.map((memo: any) => ({
-        id: memo.name, // 使用API返回的唯一 name 作为id
+        id: memo.name,
         content: memo.content,
-        creatorName: memo.creator.split('/')[1], // 从 "users/1" 中提取出 "1"
+        creatorName: memo.creator.split('/')[1],
         createTime: memo.createTime,
+        // *** 核心修正：讀取並傳遞 resources 陣列 ***
+        resources: memo.resources || [],
       }));
     }
     
@@ -58,7 +69,7 @@ async function getMemos(page: number): Promise<Memo[]> {
   }
 }
 
-// 页面主组件 (无需修改)
+// 頁面主元件
 export default async function MemosPage({
   searchParams,
 }: {
@@ -68,6 +79,7 @@ export default async function MemosPage({
 }) {
   const currentPage = Number(searchParams?.page) || 1;
   const memos = await getMemos(currentPage);
+  const apiUrl = process.env.MEMOS_API_URL || '';
 
   return (
     <main className="container mx-auto max-w-4xl px-4 py-12">
@@ -77,9 +89,9 @@ export default async function MemosPage({
       
       {memos.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border bg-card p-8 text-center text-card-foreground shadow">
-          <p className="text-lg text-muted-foreground">没有获取到内容</p>
+          <p className="text-lg text-muted-foreground">没有公开的备忘录</p>
           <p className="mt-2 text-sm text-muted-foreground">
-            可能是没有新动态，或服务器配置出现问题，请检查后台日志。
+            这里只显示您设置为“公开”的备忘录。
           </p>
           {currentPage > 1 && (
              <Button asChild variant="ghost" className="mt-4">
@@ -91,9 +103,35 @@ export default async function MemosPage({
         <div className="space-y-6">
           {memos.map((memo) => (
             <div key={memo.id} className="rounded-xl border bg-card p-4 text-card-foreground shadow">
+              {/* 渲染备忘录文字内容 */}
               <p className="whitespace-pre-wrap text-base text-muted-foreground">
                 {memo.content}
               </p>
+
+              {/* *** 核心修正：渲染图片 *** */}
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {memo.resources.map((resource) => {
+                  // 只渲染图片类型的附件
+                  if (resource.type.startsWith('image/')) {
+                    const resourceId = resource.name.split('/')[1];
+                    const imageUrl = `${apiUrl}/o/r/${resourceId}/${resource.filename}`;
+                    return (
+                      <div key={resource.name} className="relative aspect-square overflow-hidden rounded-md">
+                        <Image
+                          src={imageUrl}
+                          alt={resource.filename}
+                          fill
+                          className="object-cover transition-transform hover:scale-105"
+                          sizes="(max-width: 640px) 50vw, 33vw"
+                        />
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+
+              {/* 渲染时间和作者 */}
               <div className="mt-4 text-right text-xs text-muted-foreground">
                 <span>{new Date(memo.createTime).toLocaleString()}</span>
               </div>

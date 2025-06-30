@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
+// [调试版本]
 interface Memo {
   id: number;
   content: string;
@@ -8,39 +9,52 @@ interface Memo {
   createdAt: string; 
 }
 
-// [最终版本]
 async function getMemos(page: number): Promise<Memo[]> {
-  // 1. 读取网站的基础URL
+  console.log('\n\n--- [诊断开始] ---');
+  
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   
   if (!siteUrl) {
-    throw new Error('NEXT_PUBLIC_SITE_URL is not defined in .env.local. 请设置您网站的完整URL (例如 http://localhost:3000) 并重启服务器。');
+    console.error('❌ [诊断错误] 环境变量 NEXT_PUBLIC_SITE_URL 未定义!');
+    throw new Error('NEXT_PUBLIC_SITE_URL is not defined in .env.local. 请检查 .env.local 文件并重启服务器。');
   }
+  console.log(`[1] 读取到网站基础 URL: ${siteUrl}`);
 
   const limit = 10;
   const offset = (page - 1) * limit;
-
-  // 2. 将基础URL和相对API路径拼接成一个完整的、绝对的URL
-  //    注意：我们直接使用 /api/v1/memo，因为这是您的反向代理路径
   const fullUrl = `${siteUrl}/api/v1/memo?limit=${limit}&offset=${offset}`;
+  
+  console.log(`[2] 拼接出的完整请求 URL: ${fullUrl}`);
+  console.log('[3] 准备发起服务器端 fetch 请求...');
 
   try {
     const res = await fetch(fullUrl, {
-      next: { revalidate: 3600 }, 
+      // 增加 cache: 'no-store' 确保每次都是新的请求，排除缓存影响
+      cache: 'no-store', 
     });
 
+    console.log(`[4] 收到 API 响应，HTTP 状态码: ${res.status} ${res.statusText}`);
+
     if (!res.ok) {
-      // 如果请求失败，返回空数组，避免页面崩溃
+      console.error(`❌ [诊断错误] API 响应不成功。`);
+      // 尝试打印出响应的文本内容以获取线索
+      const errorText = await res.text();
+      console.error(`[响应内容]: ${errorText}`);
       return []; 
     }
-    return res.json();
+
+    const data = await res.json();
+    console.log(`[5] 成功解析 JSON 数据。获取到 ${data.length} 条备忘录。`);
+    console.log('--- [诊断结束] ---');
+    return data;
   } catch (error) {
-    // 如果发生网络等异常，也返回空数组
+    console.error('❌ [诊断致命错误] 在 fetch 请求过程中发生异常:', error);
+    console.log('--- [诊断结束] ---');
     return [];
   }
 }
 
-// 页面主组件（这部分无需修改）
+// 页面主组件，无需修改
 export default async function MemosPage({
   searchParams,
 }: {

@@ -2,21 +2,21 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 interface Memo {
-  id: number;
+  id: number; // 虽然API返回的是name，但为了简化，我们继续用之前的结构
   content: string;
   creatorName: string;
-  createdAt: string; 
+  createTime: string; // API返回的是createTime，和我们之前的定义匹配
 }
 
 const limit = 10;
 
-// [t.map 错误最终修正版]
+// [最终版 - 适配真实API结构]
 async function getMemos(page: number): Promise<Memo[]> {
   const apiUrl = process.env.MEMOS_API_URL;
   const accessToken = process.env.MEMOS_ACCESS_TOKEN;
   
   if (!apiUrl || !accessToken) {
-    console.error('[Configuration Error] MEMOS_API_URL or MEMOS_ACCESS_TOKEN is not set in the production environment.');
+    console.error('[Configuration Error] MEMOS_API_URL or MEMOS_ACCESS_TOKEN is not set.');
     throw new Error('Server configuration is incomplete.');
   }
 
@@ -36,26 +36,20 @@ async function getMemos(page: number): Promise<Memo[]> {
       return [];
     }
     
-    // 尝试解析JSON
     const responseData = await res.json();
 
-    // 为了调试，我们在Vercel日志中打印出API返回的完整数据结构
-    console.log('[API RESPONSE RAW DATA]', JSON.stringify(responseData, null, 2));
-
-    // *** 核心修正：智能处理数据结构 ***
-    // Memos API v0.15.0 之后，返回的数据结构是 { data: [...] }
-    // 我们检查这个结构，并返回里面的数组
-    if (responseData && Array.isArray(responseData.data)) {
-      return responseData.data;
+    // *** 核心修正：直接从 responseData.memos 中获取数组 ***
+    if (responseData && Array.isArray(responseData.memos)) {
+      // 这里的 .map 是为了适配我们前端的 Memo 接口，如果不需要可以简化
+      return responseData.memos.map((memo: any) => ({
+        id: memo.name, // 使用API返回的唯一 name 作为id
+        content: memo.content,
+        creatorName: memo.creator.split('/')[1], // 从 "users/1" 中提取出 "1"
+        createTime: memo.createTime,
+      }));
     }
     
-    // 兼容旧版 API 或者其他直接返回数组的情况
-    if (Array.isArray(responseData)) {
-      return responseData;
-    }
-    
-    // 如果结构不符合预期，打印错误并返回空数组，防止页面崩溃
-    console.error('[API Structure Error] The API response is not a recognized format.');
+    console.error('[API Structure Error] The API response did not contain a "memos" array.');
     return [];
 
   } catch (error) {
@@ -101,7 +95,7 @@ export default async function MemosPage({
                 {memo.content}
               </p>
               <div className="mt-4 text-right text-xs text-muted-foreground">
-                <span>{new Date(memo.createdAt).toLocaleString()}</span>
+                <span>{new Date(memo.createTime).toLocaleString()}</span>
               </div>
             </div>
           ))}

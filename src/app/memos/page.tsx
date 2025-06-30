@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-// 定义单条 memo 的数据结构类型
 interface Memo {
   id: number;
   content: string;
@@ -9,29 +8,39 @@ interface Memo {
   createdAt: string; 
 }
 
-// 异步函数，用于从 Memos API 获取分页数据
+// [最终版本]
 async function getMemos(page: number): Promise<Memo[]> {
-  const apiUrl = process.env.MEMOS_API_URL;
+  // 1. 读取网站的基础URL
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   
-  if (!apiUrl) {
-    throw new Error('MEMOS_API_URL is not defined in .env.local');
+  if (!siteUrl) {
+    throw new Error('NEXT_PUBLIC_SITE_URL is not defined in .env.local. 请设置您网站的完整URL (例如 http://localhost:3000) 并重启服务器。');
   }
 
-  const limit = 10; // 每页显示10条
+  const limit = 10;
   const offset = (page - 1) * limit;
 
-  const res = await fetch(`${apiUrl}/api/v1/memos?limit=${limit}&offset=${offset}`, {
-    next: { revalidate: 3600 }, 
-  });
+  // 2. 将基础URL和相对API路径拼接成一个完整的、绝对的URL
+  //    注意：我们直接使用 /api/v1/memo，因为这是您的反向代理路径
+  const fullUrl = `${siteUrl}/api/v1/memo?limit=${limit}&offset=${offset}`;
 
-  if (!res.ok) {
-    return []; 
+  try {
+    const res = await fetch(fullUrl, {
+      next: { revalidate: 3600 }, 
+    });
+
+    if (!res.ok) {
+      // 如果请求失败，返回空数组，避免页面崩溃
+      return []; 
+    }
+    return res.json();
+  } catch (error) {
+    // 如果发生网络等异常，也返回空数组
+    return [];
   }
-
-  return res.json();
 }
 
-// 页面主组件，通过 props 接收 URL searchParams 来获取当前页码
+// 页面主组件（这部分无需修改）
 export default async function MemosPage({
   searchParams,
 }: {
@@ -83,7 +92,6 @@ export default async function MemosPage({
             </Button>
           )}
         </div>
-
         <div>
           {memos.length === 10 && (
             <Button asChild variant="outline">

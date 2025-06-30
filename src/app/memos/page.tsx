@@ -20,7 +20,7 @@ async function getMemos(page: number): Promise<Memo[]> {
   const limit = 10; // 每页显示10条
   const offset = (page - 1) * limit;
 
-  const res = await fetch(`${apiUrl}/api/v1/memo?limit=${limit}&offset=${offset}`, {
+  const res = await fetch(`${apiUrl}/api/v1/memos?limit=${limit}&offset=${offset}`, {
     next: { revalidate: 3600 }, 
   });
 

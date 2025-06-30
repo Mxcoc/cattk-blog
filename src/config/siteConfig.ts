@@ -47,7 +47,7 @@ export const navItems: Array<NavItemType> = [
   },
   {
     name: 'Blog',
-    href: '/blog'
+    href: '/blogs'
   },
   {
     name: 'Projects',

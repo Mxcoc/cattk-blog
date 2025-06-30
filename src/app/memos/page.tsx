@@ -8,10 +8,9 @@ interface Memo {
   createdAt: string; 
 }
 
-// [最终授权版本]
+// [404 错误修正版]
 async function getMemos(page: number): Promise<Memo[]> {
   const apiUrl = process.env.MEMOS_API_URL;
-  // 1. 读取新的访问令牌
   const accessToken = process.env.MEMOS_ACCESS_TOKEN;
   
   if (!apiUrl || !accessToken) {
@@ -20,20 +19,19 @@ async function getMemos(page: number): Promise<Memo[]> {
 
   const limit = 10;
   const offset = (page - 1) * limit;
-  const fullUrl = `${apiUrl}/api/v1/memo?limit=${limit}&offset=${offset}`;
+  
+  // *** 核心修正：将 /memo 修改为 /memos ***
+  const fullUrl = `${apiUrl}/api/v1/memos?limit=${limit}&offset=${offset}`;
 
   try {
-    // 2. 在 fetch 请求中添加 headers 和 Authorization
     const res = await fetch(fullUrl, {
       next: { revalidate: 3600 },
       headers: {
-        // 'Bearer '后面有一个空格，请注意
         'Authorization': `Bearer ${accessToken}`,
       },
     });
 
     if (!res.ok) {
-      // 如果令牌错误或过期，API 可能会返回 401 Unauthorized 错误
       console.error(`API request failed with status: ${res.status}`);
       return []; 
     }

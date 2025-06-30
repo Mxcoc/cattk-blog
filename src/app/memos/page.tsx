@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-// [调试版本]
 interface Memo {
   id: number;
   content: string;
@@ -9,52 +8,36 @@ interface Memo {
   createdAt: string; 
 }
 
+// [最终正确版本]
 async function getMemos(page: number): Promise<Memo[]> {
-  console.log('\n\n--- [诊断开始] ---');
+  // 1. 读取正确的 Memos API 根地址
+  const apiUrl = process.env.MEMOS_API_URL;
   
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  
-  if (!siteUrl) {
-    console.error('❌ [诊断错误] 环境变量 NEXT_PUBLIC_SITE_URL 未定义!');
-    throw new Error('NEXT_PUBLIC_SITE_URL is not defined in .env.local. 请检查 .env.local 文件并重启服务器。');
+  if (!apiUrl) {
+    throw new Error('MEMOS_API_URL is not defined in .env.local. 请设置您Memos服务的完整URL (例如 https://memos.example.com) 并重启服务器。');
   }
-  console.log(`[1] 读取到网站基础 URL: ${siteUrl}`);
 
   const limit = 10;
   const offset = (page - 1) * limit;
-  const fullUrl = `${siteUrl}/api/v1/memo?limit=${limit}&offset=${offset}`;
-  
-  console.log(`[2] 拼接出的完整请求 URL: ${fullUrl}`);
-  console.log('[3] 准备发起服务器端 fetch 请求...');
+
+  // 2. 将 Memos API 根地址和 API 路径拼接
+  const fullUrl = `${apiUrl}/api/v1/memo?limit=${limit}&offset=${offset}`;
 
   try {
     const res = await fetch(fullUrl, {
-      // 增加 cache: 'no-store' 确保每次都是新的请求，排除缓存影响
-      cache: 'no-store', 
+      next: { revalidate: 3600 }, 
     });
 
-    console.log(`[4] 收到 API 响应，HTTP 状态码: ${res.status} ${res.statusText}`);
-
     if (!res.ok) {
-      console.error(`❌ [诊断错误] API 响应不成功。`);
-      // 尝试打印出响应的文本内容以获取线索
-      const errorText = await res.text();
-      console.error(`[响应内容]: ${errorText}`);
       return []; 
     }
-
-    const data = await res.json();
-    console.log(`[5] 成功解析 JSON 数据。获取到 ${data.length} 条备忘录。`);
-    console.log('--- [诊断结束] ---');
-    return data;
+    return res.json();
   } catch (error) {
-    console.error('❌ [诊断致命错误] 在 fetch 请求过程中发生异常:', error);
-    console.log('--- [诊断结束] ---');
     return [];
   }
 }
 
-// 页面主组件，无需修改
+// 页面主组件（这部分无需修改）
 export default async function MemosPage({
   searchParams,
 }: {

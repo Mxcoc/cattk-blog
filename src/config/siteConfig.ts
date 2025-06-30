@@ -40,16 +40,21 @@ export const navItems: Array<NavItemType> = [
     name: 'Home',
     href: '/'
   },
+  // 在 navLinks 数组中添加这一行
   {
-    name: 'About',
-    href: '/about'
+     href: '/memos',
+     title: '备忘录',
+  },
+  {
+    name: 'Blogs',
+    href: '/blogs'
   },
   {
     name: 'Projects',
     href: '/projects'
   },
   {
-    name: 'Blogs',
-    href: '/blogs'
+    name: 'About',
+    href: '/about'
   }
 ]

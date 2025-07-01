@@ -42,7 +42,7 @@ export const navItems: Array<NavItemType> = [
   },
   // 在 navLinks 数组中添加这一行
   {
-     name: '备忘录',
+     name: 'Memos',
      href: '/memos'
   },
   {

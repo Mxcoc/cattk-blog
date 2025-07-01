@@ -1,49 +1,39 @@
 // /app/memos/page.tsx
 
 // --- 1. 定义TypeScript类型 ---
-// 为从API获取的数据定义类型，可以增强代码健壮性和可读性
-
-// Memos中的位置信息
 interface MemoLocation {
   placeholder: string;
   latitude: number;
   longitude: number;
 }
 
-// Memos中的附件资源信息
 interface MemoResource {
   name: string;
   filename: string;
   type: string;
 }
 
-// 单条Memo的核心数据结构
 interface Memo {
   name: string;
   displayTime: string;
   content: string;
   pinned: boolean;
   resources: MemoResource[];
-  // 位置信息不是每条memo都必须有，所以设为可选
   location?: MemoLocation; 
 }
 
-// API响应的完整结构
 interface MemosApiResponse {
   memos: Memo[];
 }
 
 
 // --- 2. 数据获取函数 ---
-// 异步函数，用于从您的Memos API获取数据
 async function getMemos(): Promise<MemosApiResponse> {
   const apiUrl = "https://memos.cattk.com/api/v1/memos?limit=10";
   
   try {
     const res = await fetch(apiUrl, {
-      // Next.js 的数据缓存策略，这里设置为每小时重新验证一次数据 (3600秒)
-      // 这可以有效减少API请求次数，同时保持数据相对最新
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600 }, // 每小时重新验证一次数据
     });
 
     if (!res.ok) {
@@ -53,16 +43,13 @@ async function getMemos(): Promise<MemosApiResponse> {
     return res.json();
   } catch (error) {
     console.error("Error fetching memos:", error);
-    // 在发生错误时返回一个空数组，以避免页面崩溃
     return { memos: [] };
   }
 }
 
 
 // --- 3. 页面主组件 ---
-// 这是“备忘录”页面的核心React组件
 export default async function MemosPage() {
-  // 在服务器端获取数据
   const { memos } = await getMemos();
 
   return (
@@ -93,17 +80,19 @@ export default async function MemosPage() {
                     {memo.resources.map(resource => (
                       <div key={resource.name}>
                         {resource.type.startsWith('image/') ? (
-                           <a href={`http://memos.cattk.com/file/resources/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" title="点击查看原图">
+                           // 链接到不带缩略图参数的原图
+                           <a href={`http://memos.cattk.com/file/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" title="点击查看原图">
                              <img 
-                               // 这是根据您提供的正确链接修改后的最终版本
-                               src={`http://memos.cattk.com/file/resources/${resource.name}/${resource.filename}?thumbnail=true`} 
+                               // **【已修复】** 修正了URL拼接逻辑，直接使用 resource.name
+                               // 使用带 ?thumbnail=true 的链接加载缩略图以提高性能
+                               src={`http://memos.cattk.com/file/${resource.name}/${resource.filename}?thumbnail=true`} 
                                alt={resource.filename}
                                className="max-h-60 max-w-full rounded-lg object-cover hover:opacity-80 transition-opacity cursor-pointer"
                              />
                           </a>
                         ) : (
                           // 其他文件类型的下载链接
-                          <a href={`http://memos.cattk.com/file/resources/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          <a href={`http://memos.cattk.com/file/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                             下载附件: {resource.filename}
                           </a>
                         )}
@@ -114,26 +103,12 @@ export default async function MemosPage() {
               )}
 
               {/* 位置信息 */}
-              {memo.location && (memo.location.placeholder || (memo.location.latitude && memo.location.longitude)) && (
+              {/* **【已修改】** 只显示位置文字，移除了地图链接 */}
+              {memo.location?.placeholder && (
                 <div className="mt-4 pt-4 border-t border-gray-200 dark:border-zinc-700 text-sm">
-                  {memo.location.placeholder && (
-                    <div className="text-gray-600 dark:text-gray-300">
-                      <span className="font-semibold">位置:</span> {memo.location.placeholder}
-                    </div>
-                  )}
-
-                  {memo.location.latitude && memo.location.longitude && (
-                    <div className="mt-1 text-gray-500 dark:text-gray-400">
-                      <a 
-                        href={`https://www.google.com/maps/search/?api=1&query=${memo.location.latitude},${memo.location.longitude}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="hover:underline text-blue-500"
-                      >
-                        在地图上查看 →
-                      </a>
-                    </div>
-                  )}
+                  <div className="text-gray-600 dark:text-gray-300">
+                    <span className="font-semibold">位置:</span> {memo.location.placeholder}
+                  </div>
                 </div>
               )}
             </div>

@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
-// 注意：我们已移除 rehype-highlight 和其CSS文件的引用
 
 import Lightbox from './Lightbox';
 import ImageGrid from './ImageGrid';
@@ -14,7 +13,6 @@ import { Memo, User } from './types';
 async function getMemos(): Promise<Memo[]> {
   const apiUrl = "https://memos.cattk.com/api/v1/memos?limit=15";
   try {
-    // 使用 { cache: 'no-store' } 确保数据总是最新的，以避免Vercel缓存问题
     const res = await fetch(apiUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch memos');
     const data = await res.json();
@@ -31,10 +29,9 @@ const FallbackAvatar = () => ( <div className="w-12 h-12 bg-gray-200 dark:bg-gra
 
 // --- 页面主组件 ---
 export default function MemosPage() {
-  // 手动配置您的用户信息
   const user: User = {
-    displayName: "Corey Chiu", // <--- 在这里修改为您的名字
-    avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4" // <--- 在这里修改为您的头像URL
+    displayName: "Corey Chiu",
+    avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4"
   };
 
   const [memos, setMemos] = useState<Memo[]>([]);
@@ -64,7 +61,6 @@ export default function MemosPage() {
       <main className="container mx-auto max-w-2xl px-4 py-8">
         <h1 className="text-4xl font-bold mb-8 text-center">Memos</h1>
         
-        {/* 移除了外层的左右边框 (border-x) */}
         <div>
           {isLoading ? (
             <p className="p-4 text-center text-gray-500">正在加载备忘录...</p>
@@ -80,17 +76,12 @@ export default function MemosPage() {
                     <span className="text-gray-500 text-sm">· {new Date(memo.displayTime).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}</span>
                   </header>
                   
-                  {/* 使用 ReactMarkdown 渲染内容，但已移除高亮插件 */}
                   <div className="prose prose-sm dark:prose-invert max-w-none text-gray-800 dark:text-gray-200">
-                    <ReactMarkdown>
-                      {memo.content}
-                    </ReactMarkdown>
+                    <ReactMarkdown>{memo.content}</ReactMarkdown>
                   </div>
                   
-                  {/* 媒体网格 */}
                   <ImageGrid resources={memo.resources} onMediaClick={handleMediaClick} />
                   
-                  {/* 显示带下划线的标签 */}
                   {memo.tags && memo.tags.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-sm text-blue-600 dark:text-blue-400">
                       {memo.tags.map(tag => (
@@ -112,6 +103,27 @@ export default function MemosPage() {
       </main>
       
       {lightboxResource && <Lightbox resource={lightboxResource} onClose={closeLightbox} />}
+
+      {/* 【已修改】将CSS样式直接写在这里，不再需要 globals.css */}
+      <style jsx global>{`
+        .prose .prose-sm pre {
+          background-color: rgb(39 39 42);
+          color: white;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .dark .prose .prose-sm pre {
+          background-color: rgb(24 24 27);
+        }
+        
+        .prose .prose-sm pre code {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+          font-size: 0.875rem;
+          line-height: 1.25rem;
+        }
+      `}</style>
     </>
   );
 }

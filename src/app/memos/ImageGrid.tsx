@@ -6,11 +6,11 @@ import { MemoResource } from './types';
 
 interface ImageGridProps {
   resources: MemoResource[];
-  onMediaClick: (resource: { src: string; type: string }) => void;
+  // 修改：现在传递的是被点击媒体的索引
+  onMediaClick: (index: number) => void; 
 }
 
 export default function ImageGrid({ resources, onMediaClick }: ImageGridProps) {
-  // 同时支持图片和视频
   const mediaResources = resources.filter(
     r => r.type.startsWith('image/') || r.type.startsWith('video/')
   );
@@ -25,13 +25,13 @@ export default function ImageGrid({ resources, onMediaClick }: ImageGridProps) {
   };
   
   const getSingleMediaStyle = () => {
-      if (count === 1) return { maxWidth: '66.66%' };
-      return {};
+    if (count === 1) return { maxWidth: '66.66%' };
+    return {};
   }
 
   return (
     <div className={`mt-3 grid gap-1 ${getGridClass()}`} style={getSingleMediaStyle()}>
-      {mediaResources.map(resource => {
+      {mediaResources.map((resource, index) => { // <-- 增加了 index
         const fullSrc = `http://memos.cattk.com/file/${resource.name}/${resource.filename}`;
         const isVideo = resource.type.startsWith('video/');
 
@@ -39,15 +39,13 @@ export default function ImageGrid({ resources, onMediaClick }: ImageGridProps) {
           <div
             key={resource.name}
             className="relative aspect-square cursor-pointer bg-gray-100 dark:bg-zinc-800"
-            onClick={() => onMediaClick({ src: fullSrc, type: resource.type })}
+            // 修改：传递当前媒体的索引
+            onClick={() => onMediaClick(index)}
           >
             {isVideo ? (
               <video
-                src={`${fullSrc}#t=0.1`} // `#t=0.1` 用于在移动端显示视频第一帧
-                playsInline
-                muted
-                loop
-                preload="metadata"
+                src={`${fullSrc}#t=0.1`}
+                playsInline muted loop preload="metadata"
                 className="w-full h-full object-cover"
               />
             ) : (

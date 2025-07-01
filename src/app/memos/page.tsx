@@ -93,23 +93,17 @@ export default async function MemosPage() {
                     {memo.resources.map(resource => (
                       <div key={resource.name}>
                         {resource.type.startsWith('image/') ? (
-                           <a href={`https://memos.cattk.com/o/r/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" title="点击查看原图">
+                           <a href={`http://memos.cattk.com/file/resources/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" title="点击查看原图">
                              <img 
-                               // !!! 重要提示 !!!
-                               // 下方的图片URL是根据Memos通用结构推测的。
-                               // 如果图片无法显示，您需要确认您的Memos实例的实际资源链接格式。
-                               // 常见的格式有:
-                               // 1. https://your-memos.com/o/r/{resource.name}/{filename}
-                               // 2. https://your-memos.com/o/r/{resource.name}
-                               // 3. https://your-memos.com/u/{user_id}/r/{resource.name}
-                               // 请根据您的实际情况修改此处的 `src` 属性。
-                               src={`https://memos.cattk.com/o/r/${resource.name}/${resource.filename}`} 
+                               // 这是根据您提供的正确链接修改后的最终版本
+                               src={`http://memos.cattk.com/file/resources/${resource.name}/${resource.filename}?thumbnail=true`} 
                                alt={resource.filename}
                                className="max-h-60 max-w-full rounded-lg object-cover hover:opacity-80 transition-opacity cursor-pointer"
                              />
                           </a>
                         ) : (
-                          <a href={`https://memos.cattk.com/o/r/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                          // 其他文件类型的下载链接
+                          <a href={`http://memos.cattk.com/file/resources/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                             下载附件: {resource.filename}
                           </a>
                         )}
@@ -136,7 +130,7 @@ export default async function MemosPage() {
                         rel="noopener noreferrer" 
                         className="hover:underline text-blue-500"
                       >
-                        在地图上查看 &rarr;
+                        在地图上查看 →
                       </a>
                     </div>
                   )}

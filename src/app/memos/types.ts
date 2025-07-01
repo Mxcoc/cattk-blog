@@ -16,10 +16,11 @@ export interface MemoResource {
 }
 
 export interface Memo {
-  name: string;
+  name:string;
   creator: string;
   displayTime: string;
   content: string;
   resources: MemoResource[];
+  tags: string[];
   location?: MemoLocation; 
 }

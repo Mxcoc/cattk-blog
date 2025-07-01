@@ -48,6 +48,23 @@ export default function MemosPage() {
     loadMemos();
   }, []);
 
+  // 【已修改】新增 useEffect 来处理页面滚动条
+  useEffect(() => {
+    // 当 lightbox 打开时
+    if (lightboxResource) {
+      // 禁止 body 滚动
+      document.body.style.overflow = 'hidden';
+    } else {
+      // 当 lightbox 关闭时，恢复 body 滚动
+      document.body.style.overflow = 'auto';
+    }
+
+    // 组件卸载时，确保滚动条恢复正常，这是一个好的实践
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [lightboxResource]); // 这个 effect 依赖于 lightboxResource 的状态变化
+
   const handleMediaClick = (resource: { src: string; type: string }) => {
     setLightboxResource(resource);
   };
@@ -103,27 +120,6 @@ export default function MemosPage() {
       </main>
       
       {lightboxResource && <Lightbox resource={lightboxResource} onClose={closeLightbox} />}
-
-      {/* 【已修改】将CSS样式直接写在这里，不再需要 globals.css */}
-      <style jsx global>{`
-        .prose .prose-sm pre {
-          background-color: rgb(39 39 42);
-          color: white;
-          padding: 1rem;
-          border-radius: 0.5rem;
-          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-
-        .dark .prose .prose-sm pre {
-          background-color: rgb(24 24 27);
-        }
-        
-        .prose .prose-sm pre code {
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-          font-size: 0.875rem;
-          line-height: 1.25rem;
-        }
-      `}</style>
     </>
   );
 }

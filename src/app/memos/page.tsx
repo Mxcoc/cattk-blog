@@ -2,14 +2,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
-import ImageGrid from './ImageGrid';
 import Lightbox from './Lightbox';
-import { Memo, User, MemoResource } from './types';
+import { Memo, User } from './types';
 
 // --- 数据获取函数 ---
-async function getMemos(): Promise<Memo[]> { /* ... (函数内容未变，为节省篇幅已折叠) ... */
-    const apiUrl = "https://memos.cattk.com/api/v1/memos?limit=15";
+async function getMemos(): Promise<Memo[]> {
+    const apiUrl = "https://memos.cattk.com/api/v1/memos";
     try {
         const res = await fetch(apiUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch memos');
@@ -20,123 +20,125 @@ async function getMemos(): Promise<Memo[]> { /* ... (函数内容未变，为节
         return [];
     }
 }
-const LocationIcon = () => ( <svg className="inline-block w-4 h-4 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> );
+
+// --- 辅助图标 ---
+const LocationIcon = () => ( <svg className="inline-block w-4 h-4 mr-1 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> );
+const TagIcon = () => ( <svg className="inline-block w-4 h-4 mr-1 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> );
+const FileIcon = () => ( <svg className="w-5 h-5 inline-block mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> );
 
 // --- 页面主组件 ---
 export default function MemosPage() {
-  const user: User = {
-    displayName: "Corey Chiu",
-    avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4"
-  };
-
-  const [memos, setMemos] = useState<Memo[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // 【已修改】Lightbox状态现在存储整个画廊信息
-  const [gallery, setGallery] = useState<{ media: { src: string; type: string; }[]; index: number; } | null>(null);
-
-  useEffect(() => { /* ... (useEffect内容未变，为节省篇幅已折叠) ... */
-    async function loadMemos() {
-      setIsLoading(true);
-      const fetchedMemos = await getMemos();
-      setMemos(fetchedMemos);
-      setIsLoading(false);
-    }
-    loadMemos();
-  }, []);
-
-  useEffect(() => { /* ... (useEffect内容未变，为节省篇幅已折叠) ... */
-    if (gallery) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => {
-      document.body.style.overflow = 'auto';
+    const user: User = {
+        displayName: "Corey Chiu",
+        avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4"
     };
-  }, [gallery]);
 
-  // 【已修改】处理媒体点击，打开画廊
-  const handleMediaClick = (memo: Memo, clickedIndex: number) => {
-    const media = memo.resources
-      .filter(r => r.type.startsWith('image/') || r.type.startsWith('video/'))
-      .map(r => ({
-        src: `http://memos.cattk.com/file/${r.name}/${r.filename}`,
-        type: r.type,
-      }));
+    const [memos, setMemos] = useState<Memo[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [lightboxResource, setLightboxResource] = useState<{ src: string; type: string } | null>(null);
+
+    useEffect(() => {
+        async function loadMemos() {
+            setIsLoading(true);
+            const fetchedMemos = await getMemos();
+            setMemos(fetchedMemos);
+            setIsLoading(false);
+        }
+        loadMemos();
+    }, []);
+
+    useEffect(() => {
+        if (lightboxResource) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [lightboxResource]);
+
+    const handleMediaClick = (resource: { src: string; type: string }) => {
+        setLightboxResource(resource);
+    };
     
-    setGallery({ media, index: clickedIndex });
-  };
+    const closeLightbox = () => setLightboxResource(null);
 
-  const closeLightbox = () => setGallery(null);
+    return (
+        <>
+            <main className="container mx-auto max-w-3xl px-4 py-8">
+                <h1 className="text-4xl font-bold mb-8 text-center">Memos</h1>
+                
+                <div className="space-y-12">
+                    {isLoading ? <p className="text-center text-gray-500">正在加载备忘录...</p> : 
+                     memos.map((memo) => (
+                        <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
+                            {/* 头部 */}
+                            <header className="flex items-center space-x-3 mb-4">
+                                <Image src={user.avatarUrl} alt={user.displayName} width={40} height={40} className="w-10 h-10 rounded-full" />
+                                <div>
+                                    <p className="font-semibold">{user.displayName}</p>
+                                    <p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                </div>
+                            </header>
 
-  const handleNext = () => {
-    if (!gallery) return;
-    const nextIndex = (gallery.index + 1) % gallery.media.length;
-    setGallery({ ...gallery, index: nextIndex });
-  };
+                            {/* 内容 */}
+                            <div className="prose dark:prose-invert max-w-none">
+                                <ReactMarkdown>{memo.content}</ReactMarkdown>
+                            </div>
 
-  const handlePrev = () => {
-    if (!gallery) return;
-    const prevIndex = (gallery.index - 1 + gallery.media.length) % gallery.media.length;
-    setGallery({ ...gallery, index: prevIndex });
-  };
+                            {/* 资源列表 (图片、视频、文件) */}
+                            {memo.resources && memo.resources.length > 0 && (
+                                <div className="mt-4 space-y-4">
+                                    {memo.resources.map(resource => {
+                                        const fullSrc = `http://memos.cattk.com/file/${resource.name}/${resource.filename}`;
+                                        const resourceType = resource.type.split('/')[0];
 
-  return (
-    <>
-      <main className="container mx-auto max-w-2xl px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 text-center">Memos</h1>
-        
-        <div className="space-y-6">
-          {isLoading ? (
-            <p className="p-4 text-center text-gray-500">正在加载备忘录...</p>
-          ) : memos.length > 0 ? (
-            memos.map((memo) => (
-              // 【已修改】恢复为卡片式UI
-              <div key={memo.name} className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-md border border-gray-200 dark:border-zinc-700">
-                <header className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  <span>{user.displayName}</span>
-                  <span className="mx-2">·</span>
-                  <time>{new Date(memo.displayTime).toLocaleString('zh-CN')}</time>
-                </header>
+                                        switch (resourceType) {
+                                            case 'image':
+                                                return (
+                                                    <div key={resource.name} onClick={() => handleMediaClick({ src: fullSrc, type: resource.type })} className="cursor-pointer">
+                                                        <Image src={`${fullSrc}?thumbnail=true`} alt={resource.filename} width={800} height={600} className="rounded-lg border dark:border-zinc-700 w-auto h-auto max-w-full" />
+                                                    </div>
+                                                );
+                                            case 'video':
+                                                return (
+                                                    <div key={resource.name}>
+                                                        <video src={fullSrc} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full" />
+                                                    </div>
+                                                );
+                                            default: // 其他所有文件类型
+                                                return (
+                                                    <a key={resource.name} href={fullSrc} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                                                        <FileIcon />
+                                                        <span>{resource.filename}</span>
+                                                    </a>
+                                                );
+                                        }
+                                    })}
+                                </div>
+                            )}
 
-                <div className="prose prose-sm dark:prose-invert max-w-none text-gray-800 dark:text-gray-200">
-                  <ReactMarkdown>{memo.content}</ReactMarkdown>
+                            {/* 页脚 (标签和位置) */}
+                            <footer className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+                                {memo.tags && memo.tags.length > 0 && (
+                                    <div className="flex items-center gap-2">
+                                        <TagIcon />
+                                        {memo.tags.join(', ')}
+                                    </div>
+                                )}
+                                {memo.location?.placeholder && (
+                                    <div className="flex items-center gap-2">
+                                        <LocationIcon />
+                                        {memo.location.placeholder}
+                                    </div>
+                                )}
+                            </footer>
+                        </article>
+                     ))
+                    }
                 </div>
-                
-                <ImageGrid 
-                  resources={memo.resources} 
-                  onMediaClick={(index) => handleMediaClick(memo, index)} 
-                />
-                
-                {(memo.tags && memo.tags.length > 0 || memo.location?.placeholder) && (
-                  <footer className="mt-4 pt-4 border-t border-gray-200 dark:border-zinc-700 space-y-2">
-                    {memo.tags && memo.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-blue-600 dark:text-blue-400">
-                        {memo.tags.map(tag => (
-                          <span key={tag} className="underline hover:no-underline cursor-pointer">#{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                    {memo.location?.placeholder && (
-                      <div className="text-sm text-gray-500 flex items-center"><LocationIcon /><span>{memo.location.placeholder}</span></div>
-                    )}
-                  </footer>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="p-4 text-center text-gray-500">暂无内容。</p>
-          )}
-        </div>
-      </main>
-      
-      <Lightbox 
-        gallery={gallery} 
-        onClose={closeLightbox}
-        onNext={handleNext}
-        onPrev={handlePrev}
-      />
-    </>
-  );
+            </main>
+            
+            {lightboxResource && <Lightbox resource={lightboxResource} onClose={closeLightbox} />}
+        </>
+    );
 }

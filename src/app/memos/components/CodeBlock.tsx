@@ -12,7 +12,8 @@ export default function CodeBlock({ children, ...props }: any) {
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
   const lines = codeText.split('\n');
 
-  if (lines[lines.length - 1] === '') {
+  // 如果最后一行是空的（通常由末尾的换行符产生），则移除它以避免多余的行号
+  if (lines.length > 1 && lines[lines.length - 1] === '') {
     lines.pop();
   }
 
@@ -37,16 +38,16 @@ export default function CodeBlock({ children, ...props }: any) {
       <div className="overflow-x-auto p-4">
         <table className="w-full text-left border-collapse">
           <tbody>
-            {lines.map((line, index) => (
+            {/* 【已修复】为 map 的参数 line 和 index 添加了明确的类型 */}
+            {lines.map((line: string, index: number) => (
               <tr key={index}>
-                {/* 【已修复】移除了固定宽度 w-10，改用左右内边距 px-4 */}
-                {/* 这使得列宽度可以根据行号的位数（如 9, 10, 100）自动调整 */}
-                <td className="px-4 text-gray-500 text-right select-none align-top">
+                <td className="pr-4 text-gray-500 text-right select-none align-top">
                   {index + 1}
                 </td>
 
                 <td className="text-white whitespace-pre align-top">
-                  {line}
+                  {/* 为了防止空行高度坍缩，我们用一个空格来占位 */}
+                  {line === '' ? ' ' : line}
                 </td>
               </tr>
             ))}

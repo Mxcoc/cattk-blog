@@ -71,9 +71,10 @@
 /* Custom styles for code blocks in Memos page */
 /* 让代码块可以横向滚动，以避免格式和编码问题 */
 .prose pre {
-    @apply bg-zinc-800 dark:bg-zinc-900 text-white p-4 rounded-lg shadow-md overflow-x-auto;
+    @apply bg-zinc-800 dark:bg-zinc-900 text-white rounded-lg shadow-md overflow-x-auto;
 }
 
+/* 【已修改】在 code 元素上应用内边距和字体样式 */
 .prose pre code {
-    @apply font-mono text-sm whitespace-pre;
+    @apply block p-4 font-mono text-sm whitespace-pre;
 }

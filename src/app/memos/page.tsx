@@ -16,10 +16,7 @@ async function getMemos(offset = 0, limit = PAGE_SIZE): Promise<Memo[]> {
     const apiUrl = `${API_BASE}?limit=${limit}&offset=${offset}`;
     try {
         const res = await fetch(apiUrl, { cache: 'no-store' });
-        if (!res.ok) {
-            console.error('Failed to fetch memos:', res.statusText);
-            return [];
-        }
+        if (!res.ok) throw new Error('Failed to fetch memos');
         const data = await res.json();
         return data.memos || [];
     } catch (error) {
@@ -33,7 +30,7 @@ const TagIcon = () => ( <svg className="inline-block w-4 h-4 stroke-current" vie
 const FileIcon = () => ( <svg className="w-5 h-5 inline-block mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> );
 
 export default function MemosPage() {
-    const user: User = { displayName: "Corey Chiu", avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4" };
+    const user: User = { displayName: "Cattk", avatarUrl: "https://img.cattk.com/20250701/AQAD0McxG5JSIFd-.jpg" };
     const [memos, setMemos] = useState<Memo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [offset, setOffset] = useState(0);
@@ -43,7 +40,6 @@ export default function MemosPage() {
 
     const scrollYRef = useRef(0);
 
-    // 【已加固】确保只在浏览器环境中执行数据获取
     useEffect(() => {
         async function initialLoad() {
             setIsLoading(true);
@@ -53,27 +49,22 @@ export default function MemosPage() {
             setHasMore(initialMemos.length === PAGE_SIZE);
             setIsLoading(false);
         }
-        if (typeof window !== 'undefined') {
-            initialLoad();
-        }
+        initialLoad();
     }, []);
 
-    // 【已加固】确保只在浏览器环境中操作 document 对象
     useEffect(() => {
-        // 如果不是在浏览器环境，或者弹窗没打开，直接返回
-        if (typeof window === 'undefined' || !gallery) {
-            return;
+        // 【已修复】这是更可靠的锁定滚动条的方法
+        if (gallery) {
+            scrollYRef.current = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollYRef.current}px`;
+            document.body.style.width = '100%';
+        } else {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, scrollYRef.current);
         }
-
-        const scrollY = window.scrollY;
-        const scrollbarLockedClass = 'is-scrollbar-locked';
-        
-        document.documentElement.classList.add(scrollbarLockedClass);
-
-        return () => {
-            document.documentElement.classList.remove(scrollbarLockedClass);
-            window.scrollTo(0, scrollY);
-        };
     }, [gallery]);
 
     const handleLoadMore = async () => { /* ... (函数内容未变) ... */ };
@@ -84,21 +75,32 @@ export default function MemosPage() {
 
     const markdownComponents = { pre: CodeBlock };
 
-    // 【已加固】在渲染任何内容前，增加一个顶级安全检查
-    if (typeof window === 'undefined') {
-        return null; // 在服务器端渲染或构建时，不渲染任何东西，避免潜在错误
-    }
-
     return (
         <>
             <main className="container mx-auto max-w-3xl px-4 py-8">
                 <h1 className="text-4xl font-bold mb-8 text-center">Memos</h1>
                 <div className="space-y-12">
-                    {/* ... (其余渲染逻辑未变，但现在它们被上面的安全检查保护) ... */}
+                    {isLoading ? <p className="text-center text-gray-500">正在加载备忘录...</p> : 
+                     memos.map((memo) => {
+                        const allVisualMedia = (memo.resources ?? []).filter(r => r.type.startsWith('image/') || r.type.startsWith('video/'));
+                        const imageResources = allVisualMedia.filter(r => r.type.startsWith('image/'));
+                        const videoResources = allVisualMedia.filter(r => r.type.startsWith('video/'));
+                        const fileResources = (memo.resources ?? []).filter(r => !r.type.startsWith('image/') && !r.type.startsWith('video/'));
+                        const processedContent = (memo.content ?? '').replace(/#([^\s#]+)/g, '');
+
+                        return (
+                            <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
+                                {/* ... (其余渲染逻辑未变) ... */}
+                            </article>
+                        );
+                     })}
+                    <div className="text-center">
+                        {hasMore && (<button onClick={handleLoadMore} disabled={isLoadMoreLoading} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400">{isLoadMoreLoading ? '正在加载...' : '加载更多'}</button>)}
+                        {!isLoading && !hasMore && <p className="text-gray-500">没有更多内容了</p>}
+                    </div>
                 </div>
             </main>
             <Lightbox gallery={gallery} onClose={closeLightbox} onNext={handleNext} onPrev={handlePrev} />
         </>
     );
 }
-

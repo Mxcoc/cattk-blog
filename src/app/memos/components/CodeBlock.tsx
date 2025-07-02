@@ -10,11 +10,8 @@ export default function CodeBlock({ children, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
   
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
-  const lines = codeText.split('\n');
-
-  if (lines.length > 1 && lines[lines.length - 1] === '') {
-    lines.pop();
-  }
+  // `split` 会在最后产生一个空字符串，我们用 filter 来移除它，确保行数正确
+  const lines = codeText.split('\n').filter((line, index, arr) => index < arr.length - 1 || line !== '');
 
   const handleCopy = () => {
     if (typeof codeText === 'string') {
@@ -44,7 +41,7 @@ export default function CodeBlock({ children, ...props }: any) {
                   <div key={index}>{index + 1}</div>
                 ))}
               </td>
-              {/* 【已修复】代码列：直接渲染 ReactMarkdown 传递过来的 children */}
+              {/* 代码列：直接渲染 ReactMarkdown 传递过来的 children */}
               <td className="p-4 pl-2 text-white whitespace-pre align-top">
                 <code {...props.children[0].props}>
                   {children[0].props.children}

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import Lightbox from './Lightbox';
 import { Memo, User } from './types';
+import ImageGrid from './components/ImageGrid'; // <-- 引入新的 ImageGrid 组件
 
 // --- 数据获取函数 ---
 async function getMemos(): Promise<Memo[]> {
@@ -38,107 +39,81 @@ export default function MemosPage() {
     const [lightboxResource, setLightboxResource] = useState<{ src: string; type: string } | null>(null);
 
     useEffect(() => {
-        async function loadMemos() {
-            setIsLoading(true);
-            const fetchedMemos = await getMemos();
-            setMemos(fetchedMemos);
-            setIsLoading(false);
-        }
+        async function loadMemos() { setIsLoading(true); const fetchedMemos = await getMemos(); setMemos(fetchedMemos); setIsLoading(false); }
         loadMemos();
     }, []);
 
     useEffect(() => {
-        if (lightboxResource) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
+        if (lightboxResource) { document.body.style.overflow = 'hidden'; } else { document.body.style.overflow = 'auto'; }
         return () => { document.body.style.overflow = 'auto'; };
     }, [lightboxResource]);
 
-    const handleMediaClick = (resource: { src: string; type: string }) => {
-        setLightboxResource(resource);
+    const handleImageClick = (src: string) => {
+        setLightboxResource({ src, type: 'image/png' }); // 假设所有从宫格点击的都是图片
     };
-    
+
     const closeLightbox = () => setLightboxResource(null);
 
     return (
         <>
             <main className="container mx-auto max-w-3xl px-4 py-8">
                 <h1 className="text-4xl font-bold mb-8 text-center">Memos</h1>
-                
                 <div className="space-y-12">
                     {isLoading ? <p className="text-center text-gray-500">正在加载备忘录...</p> : 
-                     memos.map((memo) => (
-                        <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
-                            {/* 头部 */}
-                            <header className="flex items-center space-x-3 mb-4">
-                                <Image src={user.avatarUrl} alt={user.displayName} width={40} height={40} className="w-10 h-10 rounded-full" />
-                                <div>
-                                    <p className="font-semibold">{user.displayName}</p>
-                                    <p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                     memos.map((memo) => {
+                        // 将图片资源和其他资源分开
+                        const imageResources = memo.resources.filter(r => r.type.startsWith('image/'));
+                        const otherResources = memo.resources.filter(r => !r.type.startsWith('image/'));
+
+                        return (
+                            <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
+                                <header className="flex items-center space-x-3 mb-4">
+                                    <Image src={user.avatarUrl} alt={user.displayName} width={40} height={40} className="w-10 h-10 rounded-full" />
+                                    <div>
+                                        <p className="font-semibold">{user.displayName}</p>
+                                        <p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                    </div>
+                                </header>
+                                
+                                {/* 【已修复】给内容容器添加 `break-words` 类确保长单词或链接能正确换行 */}
+                                <div className="prose dark:prose-invert max-w-none break-words">
+                                    <ReactMarkdown>{memo.content}</ReactMarkdown>
                                 </div>
-                            </header>
 
-                            {/* 内容 */}
-                            <div className="prose dark:prose-invert max-w-none">
-                                <ReactMarkdown>{memo.content}</ReactMarkdown>
-                            </div>
+                                {/* 图片资源使用 ImageGrid 组件 */}
+                                <ImageGrid
+                                    imageResources={imageResources}
+                                    onImageClick={handleImageClick}
+                                />
 
-                            {/* 资源列表 (图片、视频、文件) */}
-                            {memo.resources && memo.resources.length > 0 && (
-                                <div className="mt-4 space-y-4">
-                                    {memo.resources.map(resource => {
-                                        const fullSrc = `http://memos.cattk.com/file/${resource.name}/${resource.filename}`;
-                                        const resourceType = resource.type.split('/')[0];
-
-                                        switch (resourceType) {
-                                            case 'image':
-                                                return (
-                                                    <div key={resource.name} onClick={() => handleMediaClick({ src: fullSrc, type: resource.type })} className="cursor-pointer">
-                                                        <Image src={`${fullSrc}?thumbnail=true`} alt={resource.filename} width={800} height={600} className="rounded-lg border dark:border-zinc-700 w-auto h-auto max-w-full" />
-                                                    </div>
-                                                );
-                                            case 'video':
-                                                return (
-                                                    <div key={resource.name}>
-                                                        <video src={fullSrc} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full" />
-                                                    </div>
-                                                );
-                                            default: // 其他所有文件类型
-                                                return (
-                                                    <a key={resource.name} href={fullSrc} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
-                                                        <FileIcon />
-                                                        <span>{resource.filename}</span>
-                                                    </a>
-                                                );
-                                        }
-                                    })}
-                                </div>
-                            )}
-
-                            {/* 页脚 (标签和位置) */}
-                            <footer className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
-                                {memo.tags && memo.tags.length > 0 && (
-                                    <div className="flex items-center gap-2">
-                                        <TagIcon />
-                                        {memo.tags.join(', ')}
+                                {/* 其他资源（视频、文件等） */}
+                                {otherResources.length > 0 && (
+                                    <div className="mt-4 space-y-4">
+                                        {otherResources.map(resource => {
+                                            const fullSrc = `http://memos.cattk.com/file/${resource.name}/${resource.filename}`;
+                                            return resource.type.startsWith('video/') ? (
+                                                <div key={resource.name}>
+                                                    <video src={fullSrc} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full" />
+                                                </div>
+                                            ) : (
+                                                <a key={resource.name} href={fullSrc} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                                                    <FileIcon /><span>{resource.filename}</span>
+                                                </a>
+                                            );
+                                        })}
                                     </div>
                                 )}
-                                {memo.location?.placeholder && (
-                                    <div className="flex items-center gap-2">
-                                        <LocationIcon />
-                                        {memo.location.placeholder}
-                                    </div>
-                                )}
-                            </footer>
-                        </article>
-                     ))
-                    }
+                                <footer className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+                                    {memo.tags && memo.tags.length > 0 && (<div className="flex items-center gap-2"><TagIcon />{memo.tags.join(', ')}</div>)}
+                                    {memo.location?.placeholder && (<div className="flex items-center gap-2"><LocationIcon />{memo.location.placeholder}</div>)}
+                                </footer>
+                            </article>
+                        );
+                    })}
                 </div>
             </main>
-            
             {lightboxResource && <Lightbox resource={lightboxResource} onClose={closeLightbox} />}
         </>
     );
 }
+

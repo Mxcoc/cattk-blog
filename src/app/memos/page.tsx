@@ -5,12 +5,15 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import Lightbox from './Lightbox';
+import ImageGrid from './components/ImageGrid';
 import { Memo, User } from './types';
-import ImageGrid from './components/ImageGrid'; // <-- 引入新的 ImageGrid 组件
 
-// --- 数据获取函数 ---
-async function getMemos(): Promise<Memo[]> {
-    const apiUrl = "https://memos.cattk.com/api/v1/memos";
+const API_BASE = "https://memos.cattk.com/api/v1/memos";
+const PAGE_SIZE = 10;
+
+// 【已修改】数据获取函数现在支持分页
+async function getMemos(offset = 0, limit = PAGE_SIZE): Promise<Memo[]> {
+    const apiUrl = `${API_BASE}?limit=${limit}&offset=${offset}`;
     try {
         const res = await fetch(apiUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error('Failed to fetch memos');
@@ -29,30 +32,60 @@ const FileIcon = () => ( <svg className="w-5 h-5 inline-block mr-2" viewBox="0 0
 
 // --- 页面主组件 ---
 export default function MemosPage() {
-    const user: User = {
-        displayName: "Corey Chiu",
-        avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4"
-    };
+    const user: User = { displayName: "Corey Chiu", avatarUrl: "https://avatars.githubusercontent.com/u/36592359?v=4" };
 
     const [memos, setMemos] = useState<Memo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [lightboxResource, setLightboxResource] = useState<{ src: string; type: string } | null>(null);
+    // 【已新增】加载更多的状态
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
+    
+    // 【已修改】恢复画廊状态
+    const [gallery, setGallery] = useState<{ media: { src: string; type: string; }[]; index: number; } | null>(null);
 
+    // 初始加载
     useEffect(() => {
-        async function loadMemos() { setIsLoading(true); const fetchedMemos = await getMemos(); setMemos(fetchedMemos); setIsLoading(false); }
-        loadMemos();
+        async function initialLoad() {
+            setIsLoading(true);
+            const initialMemos = await getMemos(0);
+            setMemos(initialMemos);
+            setOffset(initialMemos.length);
+            setHasMore(initialMemos.length === PAGE_SIZE);
+            setIsLoading(false);
+        }
+        initialLoad();
     }, []);
 
+    // 处理滚动条锁定
     useEffect(() => {
-        if (lightboxResource) { document.body.style.overflow = 'hidden'; } else { document.body.style.overflow = 'auto'; }
+        if (gallery) { document.body.style.overflow = 'hidden'; } else { document.body.style.overflow = 'auto'; }
         return () => { document.body.style.overflow = 'auto'; };
-    }, [lightboxResource]);
+    }, [gallery]);
 
-    const handleImageClick = (src: string) => {
-        setLightboxResource({ src, type: 'image/png' }); // 假设所有从宫格点击的都是图片
+    // 【已新增】加载更多函数
+    const handleLoadMore = async () => {
+        if (isLoadMoreLoading) return;
+        setIsLoadMoreLoading(true);
+        const newMemos = await getMemos(offset);
+        if (newMemos.length > 0) {
+            setMemos(prev => [...prev, ...newMemos]);
+            setOffset(prev => prev + newMemos.length);
+        }
+        if (newMemos.length < PAGE_SIZE) {
+            setHasMore(false);
+        }
+        setIsLoadMoreLoading(false);
     };
 
-    const closeLightbox = () => setLightboxResource(null);
+    // --- 画廊相关函数 ---
+    const handleMediaClick = (memo: Memo, clickedIndex: number) => {
+        const media = memo.resources.filter(r => r.type.startsWith('image/')).map(r => ({ src: `http://memos.cattk.com/file/${r.name}/${r.filename}`, type: r.type }));
+        if (media.length > 0) setGallery({ media, index: clickedIndex });
+    };
+    const closeLightbox = () => setGallery(null);
+    const handleNext = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index + 1) % g!.media.length })); };
+    const handlePrev = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index - 1 + g!.media.length) % g!.media.length })); };
 
     return (
         <>
@@ -61,7 +94,6 @@ export default function MemosPage() {
                 <div className="space-y-12">
                     {isLoading ? <p className="text-center text-gray-500">正在加载备忘录...</p> : 
                      memos.map((memo) => {
-                        // 将图片资源和其他资源分开
                         const imageResources = memo.resources.filter(r => r.type.startsWith('image/'));
                         const otherResources = memo.resources.filter(r => !r.type.startsWith('image/'));
 
@@ -75,30 +107,21 @@ export default function MemosPage() {
                                     </div>
                                 </header>
                                 
-                                {/* 【已修复】给内容容器添加 `break-words` 类确保长单词或链接能正确换行 */}
-                                <div className="prose dark:prose-invert max-w-none break-words">
+                                {/* 【已修复】prose-pre:... 类精确地为代码块(pre)设置自动换行 */}
+                                <div className="prose dark:prose-invert max-w-none prose-pre:whitespace-pre-wrap break-words">
                                     <ReactMarkdown>{memo.content}</ReactMarkdown>
                                 </div>
 
-                                {/* 图片资源使用 ImageGrid 组件 */}
-                                <ImageGrid
-                                    imageResources={imageResources}
-                                    onImageClick={handleImageClick}
-                                />
+                                <ImageGrid imageResources={imageResources} onImageClick={(index) => handleMediaClick(memo, index)} />
 
-                                {/* 其他资源（视频、文件等） */}
-                                {otherResources.length > 0 && (
+                                {otherResources.length > 0 && ( /* ... (其他资源渲染未变，为节省篇幅已折叠) ... */
                                     <div className="mt-4 space-y-4">
                                         {otherResources.map(resource => {
                                             const fullSrc = `http://memos.cattk.com/file/${resource.name}/${resource.filename}`;
                                             return resource.type.startsWith('video/') ? (
-                                                <div key={resource.name}>
-                                                    <video src={fullSrc} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full" />
-                                                </div>
+                                                <div key={resource.name}> <video src={fullSrc} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full" /> </div>
                                             ) : (
-                                                <a key={resource.name} href={fullSrc} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
-                                                    <FileIcon /><span>{resource.filename}</span>
-                                                </a>
+                                                <a key={resource.name} href={fullSrc} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"> <FileIcon /><span>{resource.filename}</span> </a>
                                             );
                                         })}
                                     </div>
@@ -110,10 +133,18 @@ export default function MemosPage() {
                             </article>
                         );
                     })}
+                    {/* 【已新增】加载更多按钮 */}
+                    <div className="text-center">
+                        {hasMore && (
+                            <button onClick={handleLoadMore} disabled={isLoadMoreLoading} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400">
+                                {isLoadMoreLoading ? '正在加载...' : '加载更多'}
+                            </button>
+                        )}
+                        {!isLoading && !hasMore && <p className="text-gray-500">没有更多内容了</p>}
+                    </div>
                 </div>
             </main>
-            {lightboxResource && <Lightbox resource={lightboxResource} onClose={closeLightbox} />}
+            <Lightbox gallery={gallery} onClose={closeLightbox} onNext={handleNext} onPrev={handlePrev} />
         </>
     );
 }
-

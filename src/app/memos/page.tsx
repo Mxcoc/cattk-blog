@@ -7,14 +7,22 @@ import ReactMarkdown from 'react-markdown';
 import Lightbox from './Lightbox';
 import ImageGrid from './components/ImageGrid';
 import CodeBlock from './components/CodeBlock';
-import { Memo, User } from './types';
+import { Memo, User, MemoResource } from './types';
 
 const API_BASE = "https://memos.cattk.com/api/v1/memos";
 const PAGE_SIZE = 10;
 
-async function getMemos(offset = 0, limit = PAGE_SIZE): Promise<Memo[]> { /* ... (函数内容未变) ... */
+async function getMemos(offset = 0, limit = PAGE_SIZE): Promise<Memo[]> {
     const apiUrl = `${API_BASE}?limit=${limit}&offset=${offset}`;
-    try { const res = await fetch(apiUrl, { cache: 'no-store' }); if (!res.ok) throw new Error('Failed to fetch memos'); const data = await res.json(); return data.memos || []; } catch (error) { console.error("Error fetching memos:", error); return []; }
+    try {
+        const res = await fetch(apiUrl, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Failed to fetch memos');
+        const data = await res.json();
+        return data.memos || [];
+    } catch (error) {
+        console.error("Error fetching memos:", error);
+        return [];
+    }
 }
 
 const LocationIcon = () => ( <svg className="inline-block w-4 h-4 mr-1 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> );
@@ -30,27 +38,52 @@ export default function MemosPage() {
     const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false);
     const [gallery, setGallery] = useState<{ media: { src: string; type: string; }[]; index: number; } | null>(null);
 
-    useEffect(() => { /* ... (useEffect 内容未变) ... */
-        async function initialLoad() { setIsLoading(true); const initialMemos = await getMemos(0); setMemos(initialMemos); setOffset(initialMemos.length); setHasMore(initialMemos.length === PAGE_SIZE); setIsLoading(false); }
+    useEffect(() => {
+        async function initialLoad() {
+            setIsLoading(true);
+            const initialMemos = await getMemos(0);
+            setMemos(initialMemos);
+            setOffset(initialMemos.length);
+            setHasMore(initialMemos.length === PAGE_SIZE);
+            setIsLoading(false);
+        }
         initialLoad();
     }, []);
-    useEffect(() => { /* ... (useEffect 内容未变) ... */
+
+    useEffect(() => {
         if (gallery) { document.body.style.overflow = 'hidden'; } else { document.body.style.overflow = 'auto'; }
         return () => { document.body.style.overflow = 'auto'; };
     }, [gallery]);
-    const handleLoadMore = async () => { /* ... (函数内容未变) ... */
-        if (isLoadMoreLoading) return; setIsLoadMoreLoading(true); const newMemos = await getMemos(offset); if (newMemos.length > 0) { setMemos(prev => [...prev, ...newMemos]); setOffset(prev => prev + newMemos.length); } if (newMemos.length < PAGE_SIZE) { setHasMore(false); } setIsLoadMoreLoading(false);
+
+    const handleLoadMore = async () => {
+        if (isLoadMoreLoading) return;
+        setIsLoadMoreLoading(true);
+        const newMemos = await getMemos(offset);
+        if (newMemos.length > 0) {
+            setMemos(prev => [...prev, ...newMemos]);
+            setOffset(prev => prev + newMemos.length);
+        }
+        if (newMemos.length < PAGE_SIZE) {
+            setHasMore(false);
+        }
+        setIsLoadMoreLoading(false);
     };
-    const handleMediaClick = (allMedia: any, clickedIndex: number) => { /* ... (函数内容未变) ... */
-        const media = allMedia.map((r: any) => ({ src: `http://memos.cattk.com/file/${r.name}/${r.filename}`, type: r.type }));
+
+    const handleMediaClick = (allMedia: MemoResource[], clickedIndex: number) => {
+        const media = allMedia.map(r => ({
+            src: `http://memos.cattk.com/file/${r.name}/${r.filename}`,
+            type: r.type,
+        }));
         setGallery({ media, index: clickedIndex });
     };
+
     const closeLightbox = () => setGallery(null);
     const handleNext = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index + 1) % g!.media.length })); };
     const handlePrev = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index - 1 + g!.media.length) % g!.media.length })); };
 
-    // 【已修改】Markdown渲染器现在只覆盖 pre 标签
-    const markdownComponents = { pre: CodeBlock };
+    const markdownComponents = {
+        pre: CodeBlock,
+    };
 
     return (
         <>
@@ -64,17 +97,22 @@ export default function MemosPage() {
                         const videoResources = allVisualMedia.filter(r => r.type.startsWith('video/'));
                         const fileResources = memo.resources.filter(r => !r.type.startsWith('image/') && !r.type.startsWith('video/'));
                         
+                        // 【已修复】使用正则表达式将正文中的 #tag 替换为空字符串
+                        const processedContent = memo.content.replace(/#([^\s#]+)/g, '');
+
                         return (
                             <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
                                 <header className="flex items-center space-x-3 mb-4">
                                     <Image src={user.avatarUrl} alt={user.displayName} width={40} height={40} className="w-10 h-10 rounded-full" />
-                                    <div><p className="font-semibold">{user.displayName}</p><p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p></div>
+                                    <div>
+                                        <p className="font-semibold">{user.displayName}</p>
+                                        <p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                    </div>
                                 </header>
                                 
                                 <div className="prose dark:prose-invert max-w-none break-words overflow-hidden">
-                                    {/* 【已修改】不再预处理内容，直接渲染原始 content */}
                                     <ReactMarkdown components={markdownComponents}>
-                                        {memo.content}
+                                        {processedContent}
                                     </ReactMarkdown>
                                 </div>
 
@@ -82,14 +120,23 @@ export default function MemosPage() {
                                 
                                 {videoResources.map((resource, index) => {
                                     const overallIndex = imageResources.length + index;
-                                    return (<div key={resource.name} className="mt-2 cursor-pointer" onClick={() => handleMediaClick(allVisualMedia, overallIndex)}>
-                                        <video src={`http://memos.cattk.com/file/${resource.name}/${resource.filename}#t=0.1`} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full" />
-                                    </div>);
+                                    return (
+                                        <div key={resource.name} className="mt-2" onClick={() => handleMediaClick(allVisualMedia, overallIndex)}>
+                                            <video src={`http://memos.cattk.com/file/${resource.name}/${resource.filename}#t=0.1`} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full cursor-pointer" />
+                                        </div>
+                                    );
                                 })}
 
-                                {fileResources.length > 0 && ( <div className="mt-4 space-y-2">{/* ... (文件资源渲染未变) ... */}</div> )}
+                                {fileResources.length > 0 && (
+                                    <div className="mt-4 space-y-2">
+                                        {fileResources.map(resource => (
+                                            <a key={resource.name} href={`http://memos.cattk.com/file/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                                                <FileIcon /><span>{resource.filename}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
                                 
-                                {/* 【已修改】调整了页脚的布局 */}
                                 <footer className="mt-6 text-sm text-gray-500 dark:text-gray-400 space-y-2">
                                     {memo.tags && memo.tags.length > 0 && (
                                         <div className="flex items-center gap-2">
@@ -109,7 +156,7 @@ export default function MemosPage() {
                             </article>
                         );
                      })}
-                    <div className="text-center"> {/* ... (加载更多按钮未变) ... */}
+                    <div className="text-center">
                         {hasMore && (<button onClick={handleLoadMore} disabled={isLoadMoreLoading} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400">{isLoadMoreLoading ? '正在加载...' : '加载更多'}</button>)}
                         {!isLoading && !hasMore && <p className="text-gray-500">没有更多内容了</p>}
                     </div>

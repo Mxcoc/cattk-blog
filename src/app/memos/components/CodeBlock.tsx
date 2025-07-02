@@ -9,12 +9,12 @@ const CheckIcon = () => ( <svg width="16" height="16" viewBox="0 0 24 24" fill="
 export default function CodeBlock({ children, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
   
-  // 从 ReactMarkdown 的节点结构中获取纯文本代码
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
-  
-  // 计算行数
-  const lineCount = codeText.split('\n').length;
-  const lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1).join('\n');
+  const lines = codeText.split('\n');
+
+  if (lines[lines.length - 1] === '') {
+    lines.pop();
+  }
 
   const handleCopy = () => {
     if (typeof codeText === 'string') {
@@ -25,8 +25,7 @@ export default function CodeBlock({ children, ...props }: any) {
   };
 
   return (
-    <div className="relative bg-zinc-800 dark:bg-zinc-900 rounded-lg shadow-md my-4">
-      {/* 复制按钮 */}
+    <div className="relative bg-zinc-800 dark:bg-zinc-900 rounded-lg shadow-md my-4 text-sm font-mono">
       <button
         onClick={handleCopy}
         className="absolute top-3 right-3 z-10 p-1.5 text-gray-400 bg-zinc-700/50 dark:bg-zinc-800/50 rounded-md hover:text-white hover:bg-zinc-600 dark:hover:bg-zinc-700 transition-all"
@@ -35,18 +34,25 @@ export default function CodeBlock({ children, ...props }: any) {
         {isCopied ? <CheckIcon /> : <CopyIcon />}
       </button>
 
-      {/* 【已修复】使用更稳健的方式渲染代码和行号 */}
-      <div className="flex overflow-x-auto">
-        {/* 行号 */}
-        <pre className="p-4 text-right text-gray-500 select-none">
-          <code>{lineNumbers}</code>
-        </pre>
-        {/* 原始代码 */}
-        <pre className="p-4 flex-1">
-          {children}
-        </pre>
+      <div className="overflow-x-auto p-4">
+        <table className="w-full text-left border-collapse">
+          <tbody>
+            {lines.map((line, index) => (
+              <tr key={index}>
+                {/* 【已修复】移除了固定宽度 w-10，改用左右内边距 px-4 */}
+                {/* 这使得列宽度可以根据行号的位数（如 9, 10, 100）自动调整 */}
+                <td className="px-4 text-gray-500 text-right select-none align-top">
+                  {index + 1}
+                </td>
+
+                <td className="text-white whitespace-pre align-top">
+                  {line}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
-

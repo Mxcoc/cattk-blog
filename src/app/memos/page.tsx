@@ -25,7 +25,7 @@ async function getMemos(offset = 0, limit = PAGE_SIZE): Promise<Memo[]> {
     }
 }
 
-const LocationIcon = () => ( <svg className="inline-block w-4 h-4 mr-1 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> );
+const LocationIcon = () => ( <svg className="inline-block w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> );
 const TagIcon = () => ( <svg className="inline-block w-4 h-4 stroke-current" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> );
 const FileIcon = () => ( <svg className="w-5 h-5 inline-block mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> );
 
@@ -70,10 +70,7 @@ export default function MemosPage() {
     };
 
     const handleMediaClick = (allMedia: MemoResource[], clickedIndex: number) => {
-        const media = allMedia.map(r => ({
-            src: `http://memos.cattk.com/file/${r.name}/${r.filename}`,
-            type: r.type,
-        }));
+        const media = allMedia.map(r => ({ src: `http://memos.cattk.com/file/${r.name}/${r.filename}`, type: r.type }));
         setGallery({ media, index: clickedIndex });
     };
 
@@ -81,9 +78,7 @@ export default function MemosPage() {
     const handleNext = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index + 1) % g!.media.length })); };
     const handlePrev = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index - 1 + g!.media.length) % g!.media.length })); };
 
-    const markdownComponents = {
-        pre: CodeBlock,
-    };
+    const markdownComponents = { pre: CodeBlock };
 
     return (
         <>
@@ -96,35 +91,26 @@ export default function MemosPage() {
                         const imageResources = allVisualMedia.filter(r => r.type.startsWith('image/'));
                         const videoResources = allVisualMedia.filter(r => r.type.startsWith('video/'));
                         const fileResources = memo.resources.filter(r => !r.type.startsWith('image/') && !r.type.startsWith('video/'));
-                        
-                        // 【已修复】使用正则表达式将正文中的 #tag 替换为空字符串
                         const processedContent = memo.content.replace(/#([^\s#]+)/g, '');
 
                         return (
                             <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
                                 <header className="flex items-center space-x-3 mb-4">
                                     <Image src={user.avatarUrl} alt={user.displayName} width={40} height={40} className="w-10 h-10 rounded-full" />
-                                    <div>
-                                        <p className="font-semibold">{user.displayName}</p>
-                                        <p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
-                                    </div>
+                                    <div><p className="font-semibold">{user.displayName}</p><p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p></div>
                                 </header>
                                 
                                 <div className="prose dark:prose-invert max-w-none break-words overflow-hidden">
-                                    <ReactMarkdown components={markdownComponents}>
-                                        {processedContent}
-                                    </ReactMarkdown>
+                                    <ReactMarkdown components={markdownComponents}>{processedContent}</ReactMarkdown>
                                 </div>
 
                                 <ImageGrid imageResources={imageResources} onImageClick={(index) => handleMediaClick(allVisualMedia, index)} />
                                 
                                 {videoResources.map((resource, index) => {
                                     const overallIndex = imageResources.length + index;
-                                    return (
-                                        <div key={resource.name} className="mt-2" onClick={() => handleMediaClick(allVisualMedia, overallIndex)}>
-                                            <video src={`http://memos.cattk.com/file/${resource.name}/${resource.filename}#t=0.1`} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full cursor-pointer" />
-                                        </div>
-                                    );
+                                    return (<div key={resource.name} className="mt-2" onClick={() => handleMediaClick(allVisualMedia, overallIndex)}>
+                                        <video src={`http://memos.cattk.com/file/${resource.name}/${resource.filename}#t=0.1`} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full cursor-pointer" />
+                                    </div>);
                                 })}
 
                                 {fileResources.length > 0 && (
@@ -137,19 +123,20 @@ export default function MemosPage() {
                                     </div>
                                 )}
                                 
-                                <footer className="mt-6 text-sm text-gray-500 dark:text-gray-400 space-y-2">
+                                {/* 【已修复】页脚布局调整，确保间距一致 */}
+                                <footer className="mt-6 flex flex-col space-y-2 text-sm text-gray-500 dark:text-gray-400">
                                     {memo.tags && memo.tags.length > 0 && (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center">
                                             <TagIcon />
-                                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                            <div className="ml-2 flex flex-wrap gap-x-3 gap-y-1">
                                                 {memo.tags.map(tag => (<span key={tag} className="text-blue-500 dark:text-blue-400 underline decoration-dotted hover:no-underline cursor-pointer">#{tag}</span>))}
                                             </div>
                                         </div>
                                     )}
                                     {memo.location?.placeholder && (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center">
                                             <LocationIcon />
-                                            <span>{memo.location.placeholder}</span>
+                                            <span className="ml-2">{memo.location.placeholder}</span>
                                         </div>
                                     )}
                                 </footer>

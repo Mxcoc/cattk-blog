@@ -9,12 +9,12 @@ const CheckIcon = () => ( <svg width="16" height="16" viewBox="0 0 24 24" fill="
 export default function CodeBlock({ children, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
   
+  // 从 ReactMarkdown 的节点结构中获取纯文本代码
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
-  const lines = codeText.split('\n');
-
-  if (lines[lines.length - 1] === '') {
-    lines.pop();
-  }
+  
+  // 计算行数
+  const lineCount = codeText.split('\n').length;
+  const lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1).join('\n');
 
   const handleCopy = () => {
     if (typeof codeText === 'string') {
@@ -26,34 +26,27 @@ export default function CodeBlock({ children, ...props }: any) {
 
   return (
     <div className="relative bg-zinc-800 dark:bg-zinc-900 rounded-lg shadow-md my-4">
+      {/* 复制按钮 */}
       <button
         onClick={handleCopy}
-        className="absolute top-3 right-3 p-1.5 text-gray-400 bg-zinc-700 dark:bg-zinc-800 rounded-md hover:text-white hover:bg-zinc-600 dark:hover:bg-zinc-700 transition-all"
+        className="absolute top-3 right-3 z-10 p-1.5 text-gray-400 bg-zinc-700/50 dark:bg-zinc-800/50 rounded-md hover:text-white hover:bg-zinc-600 dark:hover:bg-zinc-700 transition-all"
         aria-label="Copy code to clipboard"
       >
         {isCopied ? <CheckIcon /> : <CopyIcon />}
       </button>
 
-      <pre className="overflow-x-auto p-4" {...props}>
-        <code className="font-mono text-sm text-white">
-          <span className="flex">
-            {/* 行号列 */}
-            <span className="pr-4 text-gray-500 text-right select-none">
-              {/* 【已修复】为 map 的参数添加了明确的类型 */}
-              {lines.map((_: string, index: number) => (
-                <span key={index}>{index + 1}<br/></span>
-              ))}
-            </span>
-            {/* 代码列 */}
-            <span>
-              {/* 【已修复】为 map 的参数添加了明确的类型 */}
-              {lines.map((line: string, index: number) => (
-                <span key={index}>{line}<br/></span>
-              ))}
-            </span>
-          </span>
-        </code>
-      </pre>
+      {/* 【已修复】使用更稳健的方式渲染代码和行号 */}
+      <div className="flex overflow-x-auto">
+        {/* 行号 */}
+        <pre className="p-4 text-right text-gray-500 select-none">
+          <code>{lineNumbers}</code>
+        </pre>
+        {/* 原始代码 */}
+        <pre className="p-4 flex-1">
+          {children}
+        </pre>
+      </div>
     </div>
   );
 }
+

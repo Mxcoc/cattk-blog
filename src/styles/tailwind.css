@@ -67,3 +67,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom styles for code blocks in Memos page */
+/* 让代码块可以横向滚动，以避免格式和编码问题 */
+.prose pre {
+    @apply bg-zinc-800 dark:bg-zinc-900 text-white p-4 rounded-lg shadow-md overflow-x-auto;
+}
+
+.prose pre code {
+    @apply font-mono text-sm whitespace-pre;
+}

@@ -10,8 +10,12 @@ export default function CodeBlock({ children, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
   
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
-  // `split` 会在最后产生一个空字符串，我们用 filter 来移除它，确保行数正确
-  const lines = codeText.split('\n').filter((line, index, arr) => index < arr.length - 1 || line !== '');
+  
+  // 【已修复】为 filter 的参数添加了明确的类型
+  const lines = codeText.split('\n').filter((line: string, index: number, arr: string[]) => {
+    // 这个逻辑会移除代码块末尾因为换行符而产生的那个多余的空行
+    return index < arr.length - 1 || line !== '';
+  });
 
   const handleCopy = () => {
     if (typeof codeText === 'string') {
@@ -36,12 +40,12 @@ export default function CodeBlock({ children, ...props }: any) {
           <tbody>
             <tr>
               {/* 行号列 */}
-              <td className="p-4 pr-2 text-gray-500 text-right select-none align-top">
+              <td className="p-4 pr-4 text-gray-500 text-right select-none align-top">
                 {lines.map((_, index) => (
                   <div key={index}>{index + 1}</div>
                 ))}
               </td>
-              {/* 代码列：直接渲染 ReactMarkdown 传递过来的 children */}
+              {/* 代码列 */}
               <td className="p-4 pl-2 text-white whitespace-pre align-top">
                 <code {...props.children[0].props}>
                   {children[0].props.children}

@@ -12,7 +12,6 @@ export default function CodeBlock({ children, ...props }: any) {
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
   const lines = codeText.split('\n');
 
-  // 如果最后一行是空的（通常由末尾的换行符产生），则移除它以避免多余的行号
   if (lines.length > 1 && lines[lines.length - 1] === '') {
     lines.pop();
   }
@@ -35,22 +34,23 @@ export default function CodeBlock({ children, ...props }: any) {
         {isCopied ? <CheckIcon /> : <CopyIcon />}
       </button>
 
-      <div className="overflow-x-auto p-4">
+      <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <tbody>
-            {/* 【已修复】为 map 的参数 line 和 index 添加了明确的类型 */}
-            {lines.map((line: string, index: number) => (
-              <tr key={index}>
-                <td className="pr-4 text-gray-500 text-right select-none align-top">
-                  {index + 1}
-                </td>
-
-                <td className="text-white whitespace-pre align-top">
-                  {/* 为了防止空行高度坍缩，我们用一个空格来占位 */}
-                  {line === '' ? ' ' : line}
-                </td>
-              </tr>
-            ))}
+            <tr>
+              {/* 行号列 */}
+              <td className="p-4 pr-2 text-gray-500 text-right select-none align-top">
+                {lines.map((_, index) => (
+                  <div key={index}>{index + 1}</div>
+                ))}
+              </td>
+              {/* 【已修复】代码列：直接渲染 ReactMarkdown 传递过来的 children */}
+              <td className="p-4 pl-2 text-white whitespace-pre align-top">
+                <code {...props.children[0].props}>
+                  {children[0].props.children}
+                </code>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

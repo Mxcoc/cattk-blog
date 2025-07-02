@@ -3,6 +3,7 @@
 
 import { useEffect } from 'react';
 
+// ... (接口定义未变)
 interface LightboxProps {
   gallery: {
     media: { src: string; type: string; }[];
@@ -13,8 +14,10 @@ interface LightboxProps {
   onPrev: () => void;
 }
 
+
 export default function Lightbox({ gallery, onClose, onNext, onPrev }: LightboxProps) {
   useEffect(() => {
+    // ... (键盘事件监听未变)
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') onPrev();
       if (e.key === 'ArrowRight') onNext();
@@ -48,9 +51,10 @@ export default function Lightbox({ gallery, onClose, onNext, onPrev }: LightboxP
             key={currentResource.src}
             src={currentResource.src}
             alt="Enlarged view"
-            // 【已修复】重新添加 onClick 和 cursor-pointer，实现点击图片关闭功能
             onClick={onClose}
-            className="w-full h-full object-contain cursor-pointer"
+            // 【已修复】调整了这里的样式类
+            // 这会让图片以原始尺寸显示，但如果超出屏幕则会缩小以适应
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-full max-h-full w-auto h-auto object-contain cursor-pointer"
           />
         )}
       </div>
@@ -58,6 +62,7 @@ export default function Lightbox({ gallery, onClose, onNext, onPrev }: LightboxP
       {/* 底部导航栏 */}
       {hasMultiple && (
         <div className="fixed bottom-0 left-0 right-0 h-20 flex items-center justify-center gap-8 bg-black/30 backdrop-blur-sm">
+          {/* ... (导航栏内容未变) ... */}
           <button onClick={(e) => { e.stopPropagation(); onPrev(); }} className="px-4 py-2 text-white text-lg hover:bg-white/20 rounded-md">上一张</button>
           <span className="text-white text-lg">{gallery.index + 1} / {gallery.media.length}</span>
           <button onClick={(e) => { e.stopPropagation(); onNext(); }} className="px-4 py-2 text-white text-lg hover:bg-white/20 rounded-md">下一张</button>

@@ -68,3 +68,9 @@
   }
 }
 
+/* 用于在弹窗打开时可靠地锁定背景滚动 */
+html.is-scrollbar-locked,
+html.is-scrollbar-locked body {
+  overflow: hidden !important;
+}
+

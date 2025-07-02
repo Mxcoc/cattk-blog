@@ -53,7 +53,6 @@ export default function MemosPage() {
     }, []);
 
     useEffect(() => {
-        // 【已修复】这是更可靠的锁定滚动条的方法
         if (gallery) {
             scrollYRef.current = window.scrollY;
             document.body.style.position = 'fixed';
@@ -67,8 +66,25 @@ export default function MemosPage() {
         }
     }, [gallery]);
 
-    const handleLoadMore = async () => { /* ... (函数内容未变) ... */ };
-    const handleMediaClick = (allMedia: MemoResource[], clickedIndex: number) => { /* ... (函数内容未变) ... */ };
+    const handleLoadMore = async () => {
+        if (isLoadMoreLoading) return;
+        setIsLoadMoreLoading(true);
+        const newMemos = await getMemos(offset);
+        if (newMemos.length > 0) {
+            setMemos(prev => [...prev, ...newMemos]);
+            setOffset(prev => prev + newMemos.length);
+        }
+        if (newMemos.length < PAGE_SIZE) {
+            setHasMore(false);
+        }
+        setIsLoadMoreLoading(false);
+    };
+
+    const handleMediaClick = (allMedia: MemoResource[], clickedIndex: number) => {
+        const media = allMedia.map(r => ({ src: `http://memos.cattk.com/file/${r.name}/${r.filename}`, type: r.type }));
+        setGallery({ media, index: clickedIndex });
+    };
+
     const closeLightbox = () => setGallery(null);
     const handleNext = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index + 1) % g!.media.length })); };
     const handlePrev = () => { if (gallery) setGallery(g => ({ ...g!, index: (g!.index - 1 + g!.media.length) % g!.media.length })); };
@@ -89,8 +105,57 @@ export default function MemosPage() {
                         const processedContent = (memo.content ?? '').replace(/#([^\s#]+)/g, '');
 
                         return (
+                            // 【已修复】用完整的渲染逻辑替换了占位符注释
                             <article key={memo.name} className="border-b border-gray-200 dark:border-zinc-700 pb-12">
-                                {/* ... (其余渲染逻辑未变) ... */}
+                                <header className="flex items-center space-x-3 mb-4">
+                                    <Image src={user.avatarUrl} alt={user.displayName} width={40} height={40} className="w-10 h-10 rounded-full" />
+                                    <div>
+                                        <p className="font-semibold">{user.displayName}</p>
+                                        <p className="text-sm text-gray-500">{new Date(memo.displayTime).toLocaleString('zh-CN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                    </div>
+                                </header>
+                                
+                                <div className="prose dark:prose-invert max-w-none break-words overflow-hidden">
+                                    <ReactMarkdown components={markdownComponents}>{processedContent}</ReactMarkdown>
+                                </div>
+
+                                <ImageGrid imageResources={imageResources} onImageClick={(index) => handleMediaClick(allVisualMedia, index)} />
+                                
+                                {videoResources.map((resource, index) => {
+                                    const overallIndex = imageResources.length + index;
+                                    return (
+                                        <div key={resource.name} className="mt-2" onClick={() => handleMediaClick(allVisualMedia, overallIndex)}>
+                                            <video src={`http://memos.cattk.com/file/${resource.name}/${resource.filename}#t=0.1`} controls playsInline preload="metadata" className="rounded-lg border dark:border-zinc-700 w-full max-h-96 cursor-pointer" />
+                                        </div>
+                                    );
+                                })}
+
+                                {fileResources.length > 0 && (
+                                    <div className="mt-4 space-y-2">
+                                        {fileResources.map(resource => (
+                                            <a key={resource.name} href={`http://memos.cattk.com/file/${resource.name}/${resource.filename}`} target="_blank" rel="noopener noreferrer" className="flex items-center p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg border dark:border-zinc-700 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+                                                <FileIcon /><span>{resource.filename}</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
+                                
+                                <footer className="mt-6 flex flex-col space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                                    {memo.tags?.length > 0 && (
+                                        <div className="flex items-center">
+                                            <TagIcon />
+                                            <div className="ml-2 flex flex-wrap gap-x-3 gap-y-1">
+                                                {memo.tags.map(tag => (<span key={tag} className="text-blue-500 dark:text-blue-400 underline decoration-dotted hover:no-underline cursor-pointer">#{tag}</span>))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {memo.location?.placeholder && (
+                                        <div className="flex items-center">
+                                            <LocationIcon />
+                                            <span className="ml-2">{memo.location.placeholder}</span>
+                                        </div>
+                                    )}
+                                </footer>
                             </article>
                         );
                      })}

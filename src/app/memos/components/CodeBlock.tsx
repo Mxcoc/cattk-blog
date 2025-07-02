@@ -9,11 +9,9 @@ const CheckIcon = () => ( <svg width="16" height="16" viewBox="0 0 24 24" fill="
 export default function CodeBlock({ children, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
   
-  // 从ReactMarkdown的节点结构中获取纯文本代码
   const codeText = children?.[0]?.props?.children?.[0] ?? '';
   const lines = codeText.split('\n');
 
-  // 如果最后一行是空的（通常由末尾的换行符产生），则移除它
   if (lines[lines.length - 1] === '') {
     lines.pop();
   }
@@ -28,7 +26,6 @@ export default function CodeBlock({ children, ...props }: any) {
 
   return (
     <div className="relative bg-zinc-800 dark:bg-zinc-900 rounded-lg shadow-md my-4">
-      {/* 复制按钮 */}
       <button
         onClick={handleCopy}
         className="absolute top-3 right-3 p-1.5 text-gray-400 bg-zinc-700 dark:bg-zinc-800 rounded-md hover:text-white hover:bg-zinc-600 dark:hover:bg-zinc-700 transition-all"
@@ -37,19 +34,20 @@ export default function CodeBlock({ children, ...props }: any) {
         {isCopied ? <CheckIcon /> : <CopyIcon />}
       </button>
 
-      {/* 代码块 */}
       <pre className="overflow-x-auto p-4" {...props}>
         <code className="font-mono text-sm text-white">
           <span className="flex">
             {/* 行号列 */}
             <span className="pr-4 text-gray-500 text-right select-none">
-              {lines.map((_, index) => (
+              {/* 【已修复】为 map 的参数添加了明确的类型 */}
+              {lines.map((_: string, index: number) => (
                 <span key={index}>{index + 1}<br/></span>
               ))}
             </span>
             {/* 代码列 */}
             <span>
-              {lines.map((line, index) => (
+              {/* 【已修复】为 map 的参数添加了明确的类型 */}
+              {lines.map((line: string, index: number) => (
                 <span key={index}>{line}<br/></span>
               ))}
             </span>

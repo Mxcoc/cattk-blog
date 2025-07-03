@@ -6,13 +6,11 @@ import { useState } from 'react';
 const CopyIcon = () => ( <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> );
 const CheckIcon = () => ( <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> );
 
-// 【已修复】为 props 中的 children 属性添加了 `?`，使其变为可选，以匹配 ReactMarkdown 的类型要求
-export default function CodeBlock({ children, ...props }: { children?: React.ReactNode, [key: string]: any }) {
+export default function CodeBlock({ children, ...props }: any) {
   const [isCopied, setIsCopied] = useState(false);
   
-  // 这段代码使用了可选链（?.），因此即使 children 不存在也不会崩溃
   const codeText = Array.isArray(children) ? children[0]?.props?.children?.[0] ?? '' : '';
-
+  
   const lines = codeText.split('\n').filter((line: string, index: number, arr: string[]) => {
     return index < arr.length - 1 || line !== '';
   });
@@ -39,13 +37,15 @@ export default function CodeBlock({ children, ...props }: { children?: React.Rea
         <table className="w-full text-left border-collapse">
           <tbody>
             <tr>
+              {/* 行号列 */}
               <td className="p-4 pr-4 text-gray-400 dark:text-gray-500 text-right select-none align-top">
-                {lines.map((_, index: number) => (
+                {/* 【已修复】为 map 的所有参数都添加了明确的类型 */}
+                {lines.map((_: string, index: number) => (
                   <div key={index}>{index + 1}</div>
                 ))}
               </td>
+              {/* 代码列 */}
               <td className="p-4 pl-2 text-gray-800 dark:text-white whitespace-pre align-top">
-                {/* 直接渲染 children，确保内容能正确显示 */}
                 <code {...props}>{children}</code>
               </td>
             </tr>

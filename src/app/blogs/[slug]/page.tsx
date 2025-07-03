@@ -4,11 +4,6 @@ import { Mdx } from '@/components/Mdx';
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-// 使用 dynamic import 动态加载评论组件，并禁用 SSR (ssr: false)
-// 这确保了评论组件只会在用户的浏览器中渲染，不会影响页面的初始加载速度
-const Comment = dynamic(() => import('@/components/Comment'), { ssr: false });
 
 interface PostPageProps {
   params: {
@@ -60,14 +55,6 @@ export default async function PostPage({ params }: PostPageProps) {
           <Mdx code={post.body.code} />
         </div>
       </article>
-
-      {/* ↓↓↓ 在这里添加评论组件 ↓↓↓
-        将其放置在文章内容 <article> 标签之后
-        这样评论区就会显示在文章的正文下方
-      */}
-      <div className="w-full">
-        <Comment />
-      </div>
     </div>
   );
 }

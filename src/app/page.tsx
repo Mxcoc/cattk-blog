@@ -115,7 +115,7 @@ export default async function Home() {
           <p className="text-base text-muted-foreground max-w-2xl mb-2">
             {activityIntro}
           </p>
-          /* <TweetGrid /> */
+          <TweetGrid />
           <MarqueeVertical />
         </div>
       </Container>

@@ -15,12 +15,12 @@ export const githubUsername = 'Mxcoc'
 
 
 // about page
-// export const aboutMeHeadline = "I'm Corey Chiu, a software engineer based in Shenzhen, China."
-// export const aboutParagraphs = [
-//   "I love coding. I learned programming when I in college. I wrote my first program in Java when I was 18.",
-//   "I have a lot of hobbies, such as travelling, photography, watching movies, music and so on.",
-//   "I'm working as a software develop engineer in Shenzhen, China now. And I'm building a lot of side projects in my spare time."
-// ]
+export const aboutMeHeadline = "I'm Corey Chiu, a software engineer based in Shenzhen, China."
+export const aboutParagraphs = [
+  "I love coding. I learned programming when I in college. I wrote my first program in Java when I was 18.",
+  "I have a lot of hobbies, such as travelling, photography, watching movies, music and so on.",
+  "I'm working as a software develop engineer in Shenzhen, China now. And I'm building a lot of side projects in my spare time."
+]
 
 
 

@@ -1,6 +1,8 @@
 // projects
+{/*
 export const projectHeadLine = "What I've done and what I'm doing."
 export const projectIntro = "I've worked on a variety of projects, from simple websites to complex web applications. And many of them are open-source. Here are a few of my favorites."
+*/}
 
 export type ProjectItemType = {
     name: string

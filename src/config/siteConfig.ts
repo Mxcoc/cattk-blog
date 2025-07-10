@@ -46,10 +46,6 @@ export const navItems: Array<NavItemType> = [
     href: '/blogs'
   },
   {
-    name: 'Projects',
-    href: '/projects'
-  },
-  {
     name: 'About',
     href: '/about'
   }

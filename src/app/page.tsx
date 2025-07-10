@@ -70,6 +70,7 @@ export default async function Home() {
             <CustomIcon name='github' size={28}/>
             Open Source
           </h2>
+{/*
           <ul
             role="list"
             className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3"
@@ -78,6 +79,7 @@ export default async function Home() {
               <GithubProjectCard key={project.name} project={project} titleAs='h3'/>
             ))}
           </ul>
+*/}
         </div>
         <div className="mx-auto flex flex-col max-w-xl gap-6 py-8 my-8 lg:max-w-none border-t border-muted">
           <h2 className="text-3xl font-semibold tracking-tight md:text-5xl opacity-80">

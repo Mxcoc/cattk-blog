@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
 import { SimpleLayout } from '@/components/layout/SimpleLayout'
 
-import { friendsHeadLine, friendsIntro, projects, githubProjects, friends } from '@/config/infoConfig'
+import { friendsHeadLine, friendsIntro, projects, friends } from '@/config/infoConfig'
 
 import { FriendCard } from '@/components/friends/FriendCard'
 import { GithubProjectCard } from '@/components/project/GithubProjectCard'

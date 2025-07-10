@@ -1,4 +1,4 @@
-export * from './projects'
+
 export * from './friends'
 export * from './changelog'
 export * from './education'

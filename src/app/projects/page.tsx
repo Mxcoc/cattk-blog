@@ -1,7 +1,7 @@
 import { type Metadata } from 'next'
 import { SimpleLayout } from '@/components/layout/SimpleLayout'
 
-import { projectHeadLine, projectIntro, projects, githubProjects } from '@/config/infoConfig'
+import { projectHeadLine, projectIntro, projects } from '@/config/infoConfig'
 
 import { ProjectCard } from '@/components/project/ProjectCard'
 import { GithubProjectCard } from '@/components/project/GithubProjectCard'
@@ -31,6 +31,7 @@ export default function Projects() {
             <CustomIcon name='github' size={28}/>
             Open Source
           </h2>
+{/*
           <ul
             role="list"
             className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 md:grid-cols-3"
@@ -39,6 +40,7 @@ export default function Projects() {
               <GithubProjectCard key={project.name} project={project} titleAs='h3'/>
             ))}
           </ul>
+*/}
         </div>
     </SimpleLayout>
   )

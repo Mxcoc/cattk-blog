@@ -4,7 +4,7 @@ import { SimpleLayout } from '@/components/layout/SimpleLayout'
 import { friendsHeadLine, friendsIntro, friends } from '@/config/infoConfig'
 
 import { FriendCard } from '@/components/friends/FriendCard'
-import { GithubProjectCard } from '@/components/project/GithubProjectCard'
+
 import { CustomIcon } from '@/components/shared/CustomIcon'
 
 export const metadata: Metadata = {

@@ -30,20 +30,3 @@ export type ProjectItemType = {
     }
   ]
   
-  export const githubProjects: Array<ProjectItemType> = [
-    {
-      name: 'Devtoolset',
-      description: 'Open-source & database-free developer tools navigator / 开源无数据库配置的开发者工具导航站',
-      link: { href: 'github.com/iAmCorey/devtoolset', label: 'Devtoolset' },
-      gitStars: 203,
-      gitForks: 67
-    },
-    {
-      name: 'Cantonese Echoes',
-      description:
-        'Cantonese Echoes / 粵語殘片',
-      link: { href: 'github.com/iAmCorey/Cantonese-Echoes', label: 'Cantonese Echoes' },
-      gitStars: 1
-    },
-  ]
-  

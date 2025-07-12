@@ -8,7 +8,7 @@ import { headline, introduction } from '@/config/infoConfig'
 import { BlogCard } from '@/components/home/BlogCard'
 import { getAllBlogs, type BlogType } from '@/lib/blogs'
 
-import { blogHeadLine, blogIntro, techIcons, } from '@/config/infoConfig'
+import { techIcons, } from '@/config/infoConfig'
 
 import { CustomIcon } from '@/components/shared/CustomIcon'
 import IconCloud from "@/components/ui/icon-cloud";
@@ -41,14 +41,6 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="mx-auto flex flex-col max-w-xl gap-6 py-8 my-8 lg:max-w-none border-t border-muted">
-          <h2 className="text-3xl font-semibold tracking-tight md:text-5xl opacity-80">
-            {blogHeadLine}
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mb-8">
-            {blogIntro}
-          </p>
-        </div>
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">
           {/* left column */}
           {/* blog */}

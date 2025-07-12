@@ -17,11 +17,11 @@ export const aboutParagraphs = [
   "待更新……",
 ]
 
-
+{/*
 // blog
 export const blogHeadLine = "TEST."
 export const blogIntro = "123456789."
-
+*/}
 
 // social links
 export type SocialLinkType = {

@@ -1,6 +1,6 @@
 
 import { Container } from '@/components/layout/Container'
-import Newsletter from '@/components/home/Newsletter'
+
 import Feed from '@/components/home/Feed'
 
 import SocialLinks from '@/components/home/SocialLinks'
@@ -62,7 +62,6 @@ export default async function Home() {
           </div>
 
           {/* right column */}
-            {/* <Newsletter /> */}
             <Feed />
         </div>
       </Container>

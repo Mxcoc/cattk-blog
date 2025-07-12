@@ -14,7 +14,7 @@ import GithubContributions from '@/components/home/GithubCalendar'
 import GitHubSnake from '@/components/home/GitHubSnake'
 import { CustomIcon } from '@/components/shared/CustomIcon'
 import IconCloud from "@/components/ui/icon-cloud";
-import { TweetGrid } from "@/components/home/TweetGrid";
+
 import { MarqueeVertical } from '@/components/home/MarqueeVertical'
 import Link from 'next/link'
 import { ChevronRightIcon } from 'lucide-react'

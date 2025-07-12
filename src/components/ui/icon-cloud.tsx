@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTheme } from "next-themes";
 import {
   Cloud,
@@ -8,14 +8,11 @@ import {
   ICloud,
   renderSimpleIcon,
   SimpleIcon,
-  Tag,
 } from "react-icon-cloud";
 
 export type DynamicCloudProps = {
   iconSlugs: string[];
 };
-
-type IconData = Awaited<ReturnType<typeof fetchSimpleIcons>>;
 
 const renderCustomIcon = (iconPath: string, theme: string) => {
     return (
@@ -58,7 +55,6 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
     },
   };
 
-  // 直接使用 iconSlugs (现在是路径数组) 来渲染自定义图标
   const renderedIcons = useMemo(() => {
     return iconSlugs.map((slug) => renderCustomIcon(slug, theme ?? 'light'));
   }, [iconSlugs, theme]);

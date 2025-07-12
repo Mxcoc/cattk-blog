@@ -9,7 +9,6 @@ import { BlogCard } from '@/components/home/BlogCard'
 import { getAllBlogs, type BlogType } from '@/lib/blogs'
 
 import { blogHeadLine, blogIntro, techIcons, } from '@/config/infoConfig'
-import GithubContributions from '@/components/home/GithubCalendar'
 
 import { CustomIcon } from '@/components/shared/CustomIcon'
 import IconCloud from "@/components/ui/icon-cloud";

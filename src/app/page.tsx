@@ -49,7 +49,7 @@ export default async function Home() {
             {blogIntro}
           </p>
         </div>
-        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-2 pb-4">
+        <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">
           {/* left column */}
           {/* blog */}
           <div className="flex flex-col gap-16">

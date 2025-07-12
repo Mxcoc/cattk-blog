@@ -19,7 +19,7 @@ import { ChevronRightIcon } from 'lucide-react'
 
 
 export default async function Home() {
-  let blogList = (await getAllBlogs()).slice(0, 4)
+  let blogList = (await getAllBlogs()).slice(0, 10)
   // console.log('blogList: ', blogList)
 
   return (

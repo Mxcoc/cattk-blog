@@ -8,13 +8,12 @@ import { headline, introduction } from '@/config/infoConfig'
 import { BlogCard } from '@/components/home/BlogCard'
 import { getAllBlogs, type BlogType } from '@/lib/blogs'
 
-import { blogHeadLine, blogIntro, techIcons, activityHeadLine, activityIntro } from '@/config/infoConfig'
+import { blogHeadLine, blogIntro, techIcons, } from '@/config/infoConfig'
 import GithubContributions from '@/components/home/GithubCalendar'
 import GitHubSnake from '@/components/home/GitHubSnake'
 import { CustomIcon } from '@/components/shared/CustomIcon'
 import IconCloud from "@/components/ui/icon-cloud";
 
-import { MarqueeVertical } from '@/components/home/MarqueeVertical'
 import Link from 'next/link'
 import { ChevronRightIcon } from 'lucide-react'
 
@@ -103,16 +102,6 @@ export default async function Home() {
 
             {/* <Newsletter /> */}
             <Feed />
-        </div>
-        <div className="mx-auto flex flex-col max-w-xl gap-6 lg:max-w-none my-4 py-8 border-t border-muted">
-          <h2 className="text-3xl font-semibold tracking-tight md:text-5xl opacity-80">
-            {activityHeadLine}
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mb-2">
-            {activityIntro}
-          </p>
-          {/* <TweetGrid /> */}
-          <MarqueeVertical />
         </div>
       </Container>
     </>

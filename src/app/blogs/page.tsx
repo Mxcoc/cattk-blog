@@ -29,7 +29,7 @@ function BlogCard({ blog }: { blog: BlogType }) {
         {formatDate(blog.date)}
       </time>
       <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        {blog.summary}
+        {blog.description}
       </p>
       <div
         aria-hidden="true"

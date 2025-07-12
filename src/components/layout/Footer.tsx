@@ -27,7 +27,7 @@ function NavLink({
 
 export function Footer() {
   return (
-    <footer className="mt-32 flex-none">
+    <footer className="mt-12 flex-none">
       <ContainerOuter>
         <div className="border-t border-muted pb-16 pt-10">
           <ContainerInner>

@@ -60,7 +60,8 @@ export const techIcons = [
   "/icons/macos.svg",
   "/icons/mysql.svg",
   "/icons/vercel.svg",
-  "/icons/x.svg"
+  "/icons/x.svg",
+  "/icons/cattk.jpg"
 ];
 
 

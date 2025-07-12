@@ -19,8 +19,8 @@ export const aboutParagraphs = [
 
 
 // blog
-export const blogHeadLine = "What I've thinking about."
-export const blogIntro = "I've written something about AI, programming and life."
+export const blogHeadLine = "TEST."
+export const blogIntro = "123456789."
 
 
 // social links
@@ -42,7 +42,7 @@ export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'Github',
     icon: 'github',
-    href: 'https://github.com/iamcorey',
+    href: 'https://github.com/#',
     external: true
   }
 ]

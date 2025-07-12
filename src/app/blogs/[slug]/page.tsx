@@ -5,6 +5,8 @@ import { getBlogBySlug } from '@/lib/blogs'
 import { getMDXContent } from '@/lib/mdx'
 import { BlogLayout } from '@/components/layout/BlogLayout'
 
+import TwikooComment from '@/components/blog/TwikooComment'
+
 export const runtime = process.env.NEXT_RUNTIME === 'edge' ? 'edge' : 'nodejs'
 
 interface Props {
@@ -41,6 +43,10 @@ export default async function BlogPage({ params }: Props) {
       <div className="mt-8 prose dark:prose-invert max-w-none">
         {content}
       </div>
+
+      {/* 在这里添加 Twikoo 评论组件 */}
+      <TwikooComment />
+
     </BlogLayout>
   )
 }

@@ -49,22 +49,18 @@ export const socialLinks: Array<SocialLinkType> = [
 
 // https://simpleicons.org/
 export const techIcons = [
-  "javascript",
-  "cloudflare",
-  "java",
-  "mysql",
-  "postgresql",
-  "nginx",
-  "vercel",
-  "docker",
-  "git",
-  "github",
-  "ios",
-  "apple",
-  "htmx",
-  "telegram",
-  "x",
-  "linux"
+  "/icons/apple.svg",
+  "/icons/bilibili.svg",
+  "/icons/cloudflare.svg",
+  "/icons/docker.svg",
+  "/icons/github.svg",
+  "/icons/htmx.svg",
+  "/icons/ios.svg",
+  "/icons/linux.svg",
+  "/icons/macos.svg",
+  "/icons/mysql.svg",
+  "/icons/vercel.svg",
+  "/icons/x.svg"
 ];
 
 

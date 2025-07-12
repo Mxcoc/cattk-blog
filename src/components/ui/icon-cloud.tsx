@@ -15,15 +15,17 @@ export type DynamicCloudProps = {
 };
 
 const renderCustomIcon = (iconPath: string, theme: string) => {
+    // 在 img 标签外层包裹一个 a 标签
     return (
-        <img 
-            key={iconPath}
-            src={iconPath} // 直接使用我们配置的本地路径
-            alt="tech icon"
-            width={50} // 可以根据需要调整图标大小
-            height={50} // 可以根据需要调整图标大小
-            style={{ filter: theme === 'dark' ? 'invert(1)' : 'none' }} // 让图标在暗色模式下反色
-        />
+        <a key={iconPath}>
+            <img 
+                src={iconPath}
+                alt="tech icon"
+                width={50}
+                height={50}
+                style={{ filter: theme === 'dark' ? 'invert(1)' : 'none' }}
+            />
+        </a>
     );
 };
 
@@ -45,7 +47,7 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
       wheelZoom: false,
       imageScale: 2,
       activeCursor: "default",
-      tooltip: null, // <--- 已修正
+      tooltip: null,
       initial: [0.1, -0.1],
       clickToFront: 500,
       tooltipDelay: 0,

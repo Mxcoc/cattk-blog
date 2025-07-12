@@ -2,8 +2,7 @@
 import { Container } from '@/components/layout/Container'
 import Newsletter from '@/components/home/Newsletter'
 import Feed from '@/components/home/Feed'
-import Career from '@/components/home/Career'
-import Education from '@/components/home/Education'
+
 import SocialLinks from '@/components/home/SocialLinks'
 import { headline, introduction } from '@/config/infoConfig'
 import { BlogCard } from '@/components/home/BlogCard'
@@ -101,9 +100,6 @@ export default async function Home() {
           </div>
 
           {/* right column */}
-          <div className="space-y-10 lg:pl-16 xl:pl-24">
-            <Career />
-            <Education />
 
             {/* <Newsletter /> */}
             <Feed />

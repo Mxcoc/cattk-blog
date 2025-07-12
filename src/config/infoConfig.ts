@@ -2,8 +2,6 @@
 export * from './friends'
 export * from './changelog'
 
-export * from './activity'
-
 
 // personal info
 export const name = "Cattk"

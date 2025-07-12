@@ -45,7 +45,7 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
       wheelZoom: false,
       imageScale: 2,
       activeCursor: "default",
-      tooltip: "none",
+      tooltip: null, // <--- 已修正
       initial: [0.1, -0.1],
       clickToFront: 500,
       tooltipDelay: 0,

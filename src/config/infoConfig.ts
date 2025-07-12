@@ -12,9 +12,9 @@ export const githubUsername = 'Mxcoc'
 
 
 // about page
-export const aboutMeHeadline = "I'm Cattk."
+export const aboutMeHeadline = "Cattk."
 export const aboutParagraphs = [
-  "I love coding. I learned programming when I in college. I wrote my first program in Java when I was 18.",
+  "待更新……",
 ]
 
 
@@ -61,7 +61,10 @@ export const techIcons = [
   "github",
   "ios",
   "apple",
-  "htmx"
+  "htmx",
+  "telegram",
+  "x",
+  "linux"
 ];
 
 

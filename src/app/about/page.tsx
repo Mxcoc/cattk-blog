@@ -8,6 +8,7 @@ import { Container } from '@/components/layout/Container'
 import portraitImage from '@/images/portrait.jpg'
 import SocialLinks from '@/components/about/SocialLinks'
 
+import TwikooComment from '@/components/blog/TwikooComment'
 
 
 
@@ -47,6 +48,10 @@ export default function About() {
           <SocialLinks />
         </div>
       </div>
+
+      {/* 在这里添加 Twikoo 评论组件 */}
+      <TwikooComment />
+
     </Container>
   )
 }

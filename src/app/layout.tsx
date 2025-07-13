@@ -5,6 +5,8 @@ import { Layout } from '@/components/layout/Layout'
 import { Analytics } from "@/components/analytics/analytics";
 import { name, headline, introduction } from '@/config/infoConfig'
 import '@/styles/tailwind.css'
+import Script from 'next/script'
+
 
 export const metadata: Metadata = {
   title: {
@@ -35,6 +37,14 @@ export default function RootLayout({
           </div>
           <Analytics />
         </Providers>
+
+      {/* 在这里添加 Umami 的追踪脚本 */}
+      <Script 
+        async 
+        src="https://umami-luhv.vercel.app/script.js" // <-- 替换成你自己的 Umami 服务域名
+        data-website-id="4e2dc115-1abf-4b71-a33b-7eb5aa4d6019" // <-- 替换成你自己的网站追踪 ID
+      />
+
       </body>
     </html>
   )

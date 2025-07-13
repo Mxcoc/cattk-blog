@@ -46,7 +46,7 @@ export default async function Home() {
           {/* blog */}
           <div className="flex flex-col gap-16">
             {blogList.map((blog: BlogType) => (
-              <BlogCard key={blog.slug} blog={blog} titleAs='h3'/>
+              <BlogCard key={blog.slug} blog={blog}/>
             ))}
             <Link href="/blogs" className="flex flex-row items-center text-sm text-primary hover:underline capitalize font-semibold">Read more blogs 
               <ChevronRightIcon className="ml-1 h-4 w-4 stroke-current" />

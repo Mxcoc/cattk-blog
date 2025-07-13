@@ -46,10 +46,7 @@ function BlogCard({ blog }: { blog: BlogType }) {
 */}
 
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { formatDate } from '@/lib/formatDate'
-import { type BlogType } from '@/lib/blogs'
+
 
 function BlogCard({ blog }: { blog: BlogType }) {
   return (

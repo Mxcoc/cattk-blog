@@ -57,3 +57,27 @@ export async function getBlogBySlug(slug: string): Promise<BlogType | null> {
     return null
   }
 }
+
+// src/lib/blogs.ts 的末尾
+
+// 获取所有不重复的标签
+export async function getAllTags() {
+  const blogs = await getAllBlogs();
+  const tagSet = new Set<string>();
+  for (const blog of blogs) {
+    blog.tags?.forEach(tag => tagSet.add(tag));
+  }
+  return Array.from(tagSet).sort();
+}
+
+// 获取所有不重复的分类
+export async function getAllCategories() {
+  const blogs = await getAllBlogs();
+  const categorySet = new Set<string>();
+  for (const blog of blogs) {
+    if (blog.category) {
+      categorySet.add(blog.category);
+    }
+  }
+  return Array.from(categorySet).sort();
+}

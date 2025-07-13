@@ -1,0 +1,122 @@
+---
+author: Cattk
+title: DIY TEF6686_ESP32 收音机
+description: 基于 ESP32、NXP TEF6686 的全波段收音机。
+date: 2024-07-29
+slug: tef6686_esp32
+image: photo_2025-02-02_12-55-10.jpg
+categories:
+- 收音机
+tags:
+- TEF6686
+- ESP32
+- DIY
+---
+
+import VideoPlayer from '/src/components/VideoPlayer.js';
+import PdfViewer from '/src/components/PdfViewer.js';
+
+## TEF6686_ESP32 作者信息
+
+项目原作者：PE5PVB
+原作者网站：[https://www.pe5pvb.nl](https://www.pe5pvb.nl)
+
+**本次 DIY 制作的版本是经过（@无伤）修改优化的，体积更加紧凑小巧！**
+
+## PCB 图片
+
+正面：
+![](photo_2024-07-30_09-59-46.jpg)
+背面：
+![](photo_2024-07-30_09-59-41.jpg)
+
+## PCB 焊接好所有元件、按钮、编码器、接口插座
+
+正面：
+![](photo_2024-07-30_10-01-09.jpg)
+背面：
+![](photo_2024-07-30_10-01-14.jpg)
+
+## 烧录固件
+
+![](photo_2024-07-30_10-05-37.jpg)
+### 第1步，使用 Type-C 数据线连接主板和电脑 USB 接口
+### 第2步，使用牙签顶住 BOOT 按钮
+### 第3步，旋转编码器打开开关
+![](2024_07_30_093534.jpg)
+### 第4步，打开电脑“设备管理器”在“端口（COM和LPT）”中找到对应的端口号
+### 第5步，打开下载的固件文件夹并解压，在文件中找到“flash.bat”双击并打开
+![](2024_07_30_093626.jpg)
+### 第6步，输入刚刚记录的端口并按回车键确认
+![](2024_07_30_093640.jpg)
+### 第7步，此时显示正在升级，如果硬件焊接没有问题，稍等一会就会显示完成，按回车键退出烧录程序
+
+## 开机测试
+
+![](photo_2024-07-30_10-54-44.jpg)
+**连接屏幕、电池、喇叭、天线测试能否正常开机并接受信号（焊接电池导线时一定要注意不要短路**）
+
+![](photo_2024-07-30_11-05-23.jpg)
+**打开编码器开关，屏幕显示开机画面，调整频率可以收到 FM 广播**
+![](photo_2024-07-30_11-05-15.jpg)
+![](photo_2024-07-30_11-05-19.jpg)
+![](photo_2024-07-30_11-02-39.jpg)
+
+## 设置页面
+
+**长按 MODE 键可以进入设置界面**
+![](photo_2024-07-30_11-02-48.jpg)
+![](photo_2024-07-30_11-02-44.jpg)
+<div style={{ textAlign: 'center' }}>☝️系统信息/界面</div>
+![](photo_2024-07-30_11-02-53.jpg)
+<div style={{ textAlign: 'center' }}>☝️固件版本/界面</div>
+
+## 安装外壳
+
+<div style={{ textAlign: 'center' }}>👇安装外壳</div>
+![](photo_2025-02-02_12-52-33.jpg)
+![](photo_2025-02-02_12-54-07.jpg)
+![](photo_2025-02-02_12-54-30.jpg)
+![](photo_2025-02-02_12-54-37.jpg)
+![](photo_2025-02-02_12-54-44.jpg)
+![](photo_2025-02-02_12-54-49.jpg)
+![](photo_2025-02-02_12-53-43.jpg)
+![](photo_2025-02-02_12-55-00.jpg)
+
+## 📰成品展示
+
+<div style={{ textAlign: 'center' }}>👇成品展示</div>
+![](photo_2025-02-02_12-55-05.jpg)
+![](photo_2025-02-02_12-55-10.jpg)
+
+## 🎬视频
+***(不支持手机端浏览器，请使用电脑端浏览器查看)***
+
+<VideoPlayer src="./video_2024-07-30_11-25-35.mp4" title="TEF6686 收音机测试 1" />
+<div style={{ textAlign: 'center' }}>**👆视频1**</div>
+
+<VideoPlayer src="./video_2024-07-30_11-25-41.mp4" title="TEF6686 收音机测试 2" />
+<div style={{ textAlign: 'center' }}>**👆视频2**</div>
+
+## 🗂️资料
+
+### 👇原理图
+***(不支持手机端浏览器，请使用电脑端浏览器查看)***
+
+<PdfViewer src="6686mini-V3-2024-0606.pdf" title="TEF6686 电路原理图" />
+
+### 👇PCB_SMT
+
+<PdfViewer src="PCB_SMT.pdf" title="PCB SMT 正面" />
+
+### 👇PCB_SMT-VALUME
+
+<PdfViewer src="PCB_SMT-VALUME.pdf" title="PCB SMT 背面" />
+
+### ⬇️资料下载
+
+**原作者Github地址：[https://github.com/PE5PVB/TEF6686_ESP32](https://github.com/PE5PVB/TEF6686_ESP32)**
+（优化网络下载，文件更新于2024.07.30）*[点此链接下载](https://files.cattk.com/GITHUB_PE5PVB_TEF6686_ESP32-main_202407302303.zip)*
+
+**此博文所使用的修改版资料下载链接：（*暂未展示*）**
+

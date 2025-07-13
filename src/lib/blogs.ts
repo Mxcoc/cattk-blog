@@ -10,7 +10,11 @@ export type BlogType = {
   date: string
   slug: string
   coverImage?: string
+  category?: string   // 新增：分类
+  tags?: string[]     // 新增：标签数组
+  views?: number      // 新增：阅读量
 }
+
 
 async function importBlog(
   blogFilename: string,

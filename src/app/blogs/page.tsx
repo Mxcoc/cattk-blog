@@ -50,13 +50,12 @@ function BlogCard({ blog }: { blog: BlogType }) {
 
 function BlogCard({ blog }: { blog: BlogType }) {
   return (
+    // 将整个卡片包裹在 Link 组件中，使其全部可点击
     <Link href={`/blogs/${blog.slug}`}>
-      {/* 1. 主容器改为 flex-row，让图片和文字水平排列 */}
-      <article className="group relative flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-        
-        {/* 2. 图片在左侧，并设置了固定尺寸 */}
+      <article className="group relative flex flex-col items-start">
+        {/* 图片部分：在顶部，占据完整宽度 */}
         {blog.coverImage && (
-          <div className="relative w-full sm:w-40 flex-shrink-0 aspect-video sm:aspect-[4/3] overflow-hidden rounded-2xl border border-zinc-100 dark:border-zinc-800">
+          <div className="relative w-full aspect-video mb-6 overflow-hidden rounded-2xl border border-zinc-100 dark:border-zinc-800">
             <Image
               src={blog.coverImage}
               alt={blog.title}
@@ -66,8 +65,8 @@ function BlogCard({ blog }: { blog: BlogType }) {
           </div>
         )}
 
-        {/* 3. 文字在右侧，并自动填充剩余空间 */}
-        <div className="flex flex-1 flex-col items-start">
+        {/* 文字部分：在图片下方 */}
+        <div className="flex w-full flex-col">
           <time
             className="relative z-10 order-first mb-3 flex items-center pl-3.5 text-sm text-zinc-400 dark:text-zinc-500"
             dateTime={blog.date}
@@ -84,7 +83,7 @@ function BlogCard({ blog }: { blog: BlogType }) {
             {blog.title}
           </h2>
           {blog.description && (
-            <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+            <p className="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
               {blog.description}
             </p>
           )}
@@ -99,6 +98,8 @@ function BlogCard({ blog }: { blog: BlogType }) {
     </Link>
   )
 }
+
+
 
 
 

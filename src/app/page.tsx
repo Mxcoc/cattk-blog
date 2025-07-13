@@ -5,7 +5,7 @@ import Feed from '@/components/home/Feed'
 
 import SocialLinks from '@/components/home/SocialLinks'
 import { headline, introduction } from '@/config/infoConfig'
-import { BlogCard } from '@/components/home/BlogCard'
+import { BlogCard } from '@/components/blog/BlogCard'
 import { getAllBlogs, type BlogType } from '@/lib/blogs'
 
 import { techIcons, } from '@/config/infoConfig'

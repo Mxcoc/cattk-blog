@@ -44,6 +44,18 @@ export const socialLinks: Array<SocialLinkType> = [
     icon: 'github',
     href: 'https://github.com/#',
     external: true
+  },
+  {
+    name: 'Telegram',
+    icon: 'telegram',
+    href: '#',
+    external: true
+  },
+  {
+    name: 'RSS',
+    icon: 'rss',
+    href: '#',
+    external: true
   }
 ]
 

@@ -42,8 +42,8 @@ export function CustomIcon({ name, size = 20 }: { name: string; size?: number })
       return <DiscordLogo size={size} weight="duotone" />;
     case "telegram":
       return <TelegramLogo size={size} weight="duotone" />;
-    case "X":
-      return <XLogo size={size} weight="duotone" />;
+    case "rss":
+      return <Rss size={size} weight="duotone" />;
 
     default:
       return null

@@ -49,8 +49,21 @@ export function BlogCard({ blog }: { blog: BlogType }) {
           >
             Read article
           </div>
+                    {/* 新增：显示标签和分类 */}
+          <div className="mt-4 flex items-center gap-x-4 text-xs">
+            {blog.category && (
+               <span className="inline-block rounded-full bg-blue-100 px-3 py-1 font-medium text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                  {blog.category}
+               </span>
+            )}
+            <div className="flex flex-wrap gap-x-2">
+               {blog.tags?.slice(0, 2).map(tag => ( // 最多显示2个标签
+                   <span key={tag} className="text-zinc-500">#{tag}</span>
+               ))}
+            </div>
         </div>
       </article>
     </Link>
   )
 }
+

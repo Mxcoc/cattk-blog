@@ -58,7 +58,7 @@ export async function getBlogBySlug(slug: string): Promise<BlogType | null> {
   }
 }
 
-// src/lib/blogs.ts 的末尾
+// src/lib/blogs.ts (文件末尾)
 
 // 获取所有不重复的标签
 export async function getAllTags() {
@@ -68,6 +68,12 @@ export async function getAllTags() {
     blog.tags?.forEach(tag => tagSet.add(tag));
   }
   return Array.from(tagSet).sort();
+}
+
+// 根据标签名获取对应的所有文章
+export async function getBlogsByTag(tag: string): Promise<BlogType[]> {
+  const blogs = await getAllBlogs();
+  return blogs.filter((blog) => blog.tags && blog.tags.includes(decodeURIComponent(tag)));
 }
 
 // 获取所有不重复的分类
@@ -81,3 +87,10 @@ export async function getAllCategories() {
   }
   return Array.from(categorySet).sort();
 }
+
+// 根据分类名获取对应的所有文章
+export async function getBlogsByCategory(category: string): Promise<BlogType[]> {
+  const blogs = await getAllBlogs();
+  return blogs.filter((blog) => blog.category && blog.category === decodeURIComponent(category));
+}
+

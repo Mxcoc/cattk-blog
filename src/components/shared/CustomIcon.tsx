@@ -13,7 +13,7 @@ import {
   WechatLogo,
   DiscordLogo,
   TelegramLogo,
-  X,
+  XLogo,
   Rss
 } from '@phosphor-icons/react'
 
@@ -41,6 +41,10 @@ export function CustomIcon({ name, size = 20 }: { name: string; size?: number })
       return <WechatLogo size={size} weight="duotone" />;
     case "discord":
       return <DiscordLogo size={size} weight="duotone" />;
+    case "telegram":
+      return <TelegramLogo size={size} weight="duotone" />;
+
+
     default:
       return null
   }

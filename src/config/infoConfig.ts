@@ -52,6 +52,12 @@ export const socialLinks: Array<SocialLinkType> = [
     external: true
   },
   {
+    name: 'Instagram',
+    icon: 'instagram',
+    href: '#',
+    external: true
+  },
+  {
     name: 'RSS',
     icon: 'rss',
     href: 'https://cattk.com/feed',

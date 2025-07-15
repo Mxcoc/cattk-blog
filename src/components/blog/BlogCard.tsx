@@ -43,14 +43,8 @@ export function BlogCard({ blog }: { blog: BlogType }) {
               {blog.description}
             </p>
           )}
-          <div
-            aria-hidden="true"
-            className="relative z-10 mt-4 flex items-center text-sm font-medium text-primary"
-          >
-            Read article
 
-          {/* --- 从这里开始粘贴新增代码 --- */}
-          {/* 新增：显示分类和标签 */}
+          {/* --- 新增代码在这里 --- */}
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {/* 分类显示 (如果存在) */}
             {blog.category && (
@@ -69,13 +63,15 @@ export function BlogCard({ blog }: { blog: BlogType }) {
               </span>
             ))}
           </div>
-          {/* --- 到这里结束粘贴 --- */}
 
-
+          <div
+            aria-hidden="true"
+            className="relative z-10 mt-4 flex items-center text-sm font-medium text-primary"
+          >
+            Read article
           </div>
         </div>
       </article>
     </Link>
   )
 }
-

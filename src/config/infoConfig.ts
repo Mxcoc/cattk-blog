@@ -54,7 +54,7 @@ export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'RSS',
     icon: 'rss',
-    href: '#',
+    href: 'https://cattk.com/feed',
     external: true
   }
 ]

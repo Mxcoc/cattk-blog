@@ -48,19 +48,31 @@ export function BlogCard({ blog }: { blog: BlogType }) {
             className="relative z-10 mt-4 flex items-center text-sm font-medium text-primary"
           >
             Read article
-          </div>
-                    {/* 新增：显示标签和分类 */}
-          <div className="mt-4 flex items-center gap-x-4 text-xs">
+
+          {/* --- 从这里开始粘贴新增代码 --- */}
+          {/* 新增：显示分类和标签 */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {/* 分类显示 (如果存在) */}
             {blog.category && (
-               <span className="inline-block rounded-full bg-blue-100 px-3 py-1 font-medium text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                  {blog.category}
-               </span>
+              <span className="relative z-10 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                {blog.category}
+              </span>
             )}
-            <div className="flex flex-wrap gap-x-2">
-               {blog.tags?.slice(0, 2).map(tag => ( // 最多显示2个标签
-                   <span key={tag} className="text-zinc-500">#{tag}</span>
-               ))}
-            </div>
+
+            {/* 标签显示 (如果存在) */}
+            {blog.tags?.map(tag => (
+              <span
+                key={tag}
+                className="relative z-10 inline-block rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+          {/* --- 到这里结束粘贴 --- */}
+
+
+          </div>
         </div>
       </article>
     </Link>

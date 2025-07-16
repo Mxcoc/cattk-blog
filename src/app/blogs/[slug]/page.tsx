@@ -35,14 +35,15 @@ export default async function BlogPage({ params }: Props) {
     notFound()
   }
 
-  const content = await getMDXContent('blog', params.slug)
+  // --- 关键改动 1: 在这里解构出 content 和 frontmatter ---
+  // 并将 content 重命名为 mdxContent，以避免变量名混淆
+  const { content: mdxContent, frontmatter } = await getMDXContent('blog', params.slug)
 
   return (
     <BlogLayout blog={blog}>
 
-      {/* --- 从这里开始是新增的代码 --- */}
+      {/* 你新增的分类和标签代码 (保持不变) */}
       <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-        {/* 显示分类，并链接到分类页面 */}
         {blog.category && (
           <Link 
             href={`/categories/${encodeURIComponent(blog.category)}`}
@@ -51,8 +52,6 @@ export default async function BlogPage({ params }: Props) {
             {blog.category}
           </Link>
         )}
-
-        {/* 显示标签，并链接到标签页面 */}
         {blog.tags?.map(tag => (
           <Link 
             key={tag} 
@@ -63,17 +62,17 @@ export default async function BlogPage({ params }: Props) {
           </Link>
         ))}
       </div>
-      {/* --- 新增代码到这里结束 --- */}
-
+      
+      {/* 文章正文 */}
       <div className="mt-8 prose dark:prose-invert max-w-none">
-        {content}
+        {/* --- 关键改动 2: 在这里渲染 mdxContent --- */}
+        {mdxContent}
       </div>
 
-      {/* 在这里添加 Twikoo 评论组件 */}
+      {/* 评论组件 (保持不变) */}
       <TwikooComment />
 
     </BlogLayout>
   )
 }
-
 

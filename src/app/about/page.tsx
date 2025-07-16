@@ -48,7 +48,7 @@ export default function About() {
         </div>
       </div>
 
-      /* 在这里添加 Twikoo 评论组件 */
+      // 在这里添加 Twikoo 评论组件
       <TwikooComment />
 
     </Container>

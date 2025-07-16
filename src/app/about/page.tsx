@@ -1,3 +1,4 @@
+{/*
 import { type Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -47,9 +48,55 @@ export default function About() {
         </div>
       </div>
 
-      {/* 在这里添加 Twikoo 评论组件 */}
+      /* 在这里添加 Twikoo 评论组件 */
       <TwikooComment />
 
+    </Container>
+  )
+}
+*/}
+// 以上代码为修改about页面为.mdx之前代码
+
+// src/app/about/page.tsx
+
+import { type Metadata } from 'next'
+import { Container } from '@/components/layout/Container'
+import { getMDXContent } from '@/lib/mdx'
+import TwikooComment from '@/components/blog/TwikooComment' // 导入评论组件
+
+// 从 frontmatter 动态生成页面的元数据
+export async function generateMetadata(): Promise<Metadata> {
+  const { frontmatter } = await getMDXContent('pages', 'about')
+  return {
+    title: frontmatter.title as string,
+    description: frontmatter.description as string,
+  }
+}
+
+export default async function AboutPage() {
+  // 获取 about.mdx 的内容和元数据
+  const { content, frontmatter } = await getMDXContent('pages', 'about')
+
+  return (
+    <Container className="mt-16 sm:mt-32">
+      <header className="max-w-3xl">
+        <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
+          {frontmatter.title as string}
+        </h1>
+        <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
+          {frontmatter.description as string}
+        </p>
+      </header>
+
+      {/* 渲染 MDX 内容 */}
+      <div className="mt-16 sm:mt-20">
+        <div className="prose dark:prose-invert max-w-none">
+          {content}
+        </div>
+      </div>
+
+      {/* 保留你之前添加的评论功能 */}
+      <TwikooComment />
     </Container>
   )
 }

@@ -10,12 +10,14 @@ export const introduction = 'Cattk | 业余无线电 HAM | 短波通信玩家 | 
 export const email = 'cattk@cattk.com'
 export const githubUsername = 'Mxcoc'
 
-
+{/*
+// 已由.mdx文件修改为独立页面显示
 // about page
 export const aboutMeHeadline = "欢迎来到 Cattk 的频率!"
 export const aboutParagraphs = [
   "test"
 ]
+*/}
 
 {/*
 // blog

@@ -4,10 +4,8 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { aboutMeHeadline, aboutParagraphs } from '@/config/infoConfig'
 import { Container } from '@/components/layout/Container'
-
 import portraitImage from '@/images/portrait.jpg'
 import SocialLinks from '@/components/about/SocialLinks'
-
 import TwikooComment from '@/components/blog/TwikooComment'
 
 
@@ -15,7 +13,7 @@ import TwikooComment from '@/components/blog/TwikooComment'
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Hi, I am Corey Chiu, a software engineer based in Shenzhen, China.',
+    '测试……',
 }
 
 export default function About() {

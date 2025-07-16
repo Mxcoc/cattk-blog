@@ -53,6 +53,7 @@ export const navItems: Array<NavItemType> = [
     name: 'Blog',
     href: '/blogs'
   },
+  {
     name: '此刻',
     href: '/now'
   },

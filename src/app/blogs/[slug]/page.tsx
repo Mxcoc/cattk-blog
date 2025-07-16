@@ -35,7 +35,7 @@ export default async function BlogPage({ params }: Props) {
     notFound()
   }
 
-  const content = await getMDXContent(params.slug)
+  const content = await getMDXContent('blog', params.slug)
 
   return (
     <BlogLayout blog={blog}>

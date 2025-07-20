@@ -1,4 +1,4 @@
-{/*
+/*
 import Link from 'next/link'
 import { ContainerInner, ContainerOuter } from '@/components/layout/Container'
 import { footerItems } from '@/config/siteConfig'
@@ -51,7 +51,7 @@ export function Footer() {
     </footer>
   )
 }
-*/｝
+*/
 
 // 解决主题按钮 与 版权信息行错乱问题，上面注释的是原代码
 // src/components/layout/Footer.tsx

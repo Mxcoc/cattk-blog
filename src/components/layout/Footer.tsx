@@ -27,7 +27,7 @@ export function Footer() {
   return (
     <footer className="mt-6 flex-none">
       <ContainerOuter>
-        <div className="border-t border-muted pb-16 pt-10">
+        <div className="border-t border-muted pb-10 pt-10">
           <ContainerInner>
             <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-start">
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium">

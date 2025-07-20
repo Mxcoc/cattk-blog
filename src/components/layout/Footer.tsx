@@ -100,10 +100,10 @@ export function Footer() {
               </p>
 
               {/* 第三行：社交图标与主题切换 */}
-              {/* 关键改动：在 flex 容器上添加 items-center 来实现垂直对齐 */}
               <div className="flex items-center gap-4">
                 <ThemeToggle />
-                <SocialLinks />
+                {/* 关键改动：为 SocialLinks 组件添加 'flex' 和 'items-center'，强制其内部也对齐 */}
+                <SocialLinks className="flex items-center" />
               </div>
               
             </div>

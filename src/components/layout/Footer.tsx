@@ -43,7 +43,6 @@ export function Footer() {
                   <ThemeToggle />
                 </div>
                 <SocialLinks className='mt-0'/>
-                <VisitData />
               </div>
             </div>
           </ContainerInner>

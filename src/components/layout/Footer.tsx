@@ -54,6 +54,7 @@ export function Footer() {
 */
 
 // 解决主题按钮 与 版权信息行错乱问题，上面注释的是原代码
+
 import Link from 'next/link'
 import { ContainerInner, ContainerOuter } from '@/components/layout/Container'
 import { footerItems } from '@/config/siteConfig'
@@ -84,11 +85,6 @@ export function Footer() {
       <ContainerOuter>
         <div className="border-t border-muted pb-10 pt-10">
           <ContainerInner>
-            {/* 主要改动：
-              1. 删除了 sm:flex-row 和 justify-between，强制在所有屏幕上都使用垂直布局。
-              2. 添加了 items-center 使所有行内容水平居中。
-              3. 调整了 gap-6 作为行间距。
-            */}
             <div className="flex flex-col items-center gap-6">
 
               {/* 第一行：导航菜单栏 */}
@@ -103,10 +99,8 @@ export function Footer() {
                 &copy; {new Date().getFullYear()} {name}. All rights reserved.
               </p>
 
-              {/* 第三行：社交图标与主题切换
-                - 使用一个新的 flex 容器将主题切换按钮和社交链接放在一行。
-                - ThemeToggle 组件被移到了 SocialLinks 组件的前面。
-              */}
+              {/* 第三行：社交图标与主题切换 */}
+              {/* 关键改动：在 flex 容器上添加 items-center 来实现垂直对齐 */}
               <div className="flex items-center gap-4">
                 <ThemeToggle />
                 <SocialLinks />

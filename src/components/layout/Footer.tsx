@@ -1,4 +1,4 @@
-/*
+
 import Link from 'next/link'
 import { ContainerInner, ContainerOuter } from '@/components/layout/Container'
 import { footerItems } from '@/config/siteConfig'
@@ -44,68 +44,6 @@ export function Footer() {
                 </div>
                 <SocialLinks className='mt-0'/>
               </div>
-            </div>
-          </ContainerInner>
-        </div>
-      </ContainerOuter>
-    </footer>
-  )
-}
-*/
-
-// 解决主题按钮 与 版权信息行错乱问题，上面注释的是原代码
-
-import Link from 'next/link'
-import { ContainerInner, ContainerOuter } from '@/components/layout/Container'
-import { footerItems } from '@/config/siteConfig'
-import { ThemeToggle } from '@/components/shared/ThemeToggle'
-import { name } from '@/config/infoConfig'
-import SocialLinks from '@/components/home/SocialLinks'
-
-function NavLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <Link
-      href={href}
-      className="transition hover:text-primary"
-    >
-      {children}
-    </Link>
-  )
-}
-
-export function Footer() {
-  return (
-    <footer className="mt-6 flex-none">
-      <ContainerOuter>
-        <div className="border-t border-muted pb-10 pt-10">
-          <ContainerInner>
-            <div className="flex flex-col items-center gap-6">
-
-              {/* 第一行：导航菜单栏 */}
-              <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium">
-                {footerItems.map((item) => (
-                  <NavLink key={item.name} href={item.href}>{item.name}</NavLink>
-                ))}
-              </div>
-
-              {/* 第二行：版权信息 */}
-              <p className="text-sm text-muted-foreground">
-                &copy; {new Date().getFullYear()} {name}. All rights reserved.
-              </p>
-
-              {/* 第三行：社交图标与主题切换 */}
-              <div className="flex items-center gap-4">
-                <ThemeToggle />
-                {/* 关键改动：为 SocialLinks 组件添加 'flex' 和 'items-center'，强制其内部也对齐 */}
-                <SocialLinks className="flex items-center" />
-              </div>
-              
             </div>
           </ContainerInner>
         </div>

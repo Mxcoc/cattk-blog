@@ -56,15 +56,15 @@ export function Footer() {
 
 
 // 解决主题按钮 与 版权信息行错乱问题，上面注释的是原代码
+
 export function Footer() {
   return (
     <footer className="mt-6 flex-none">
       <ContainerOuter>
         <div className="border-t border-muted pb-10 pt-10">
           <ContainerInner>
-            {/* --- 关键改动在这里 --- */}
-            {/* 将 sm:items-start 改为 sm:items-baseline */}
-            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-baseline">
+            {/* 主容器：在小屏幕上垂直堆叠，在 sm 及以上屏幕水平排列 */}
+            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-start">
               
               {/* 左侧：导航链接 */}
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium">
@@ -73,16 +73,23 @@ export function Footer() {
                 ))}
               </div>
               
-              {/* 右侧：版权、主题切换、社交链接 */}
+              {/* --- 从这里开始是优化后的右侧代码 --- */}
+              {/* 右侧容器：在小屏幕上居中，在 sm 及以上屏幕靠右对齐 */}
               <div className='flex flex-col items-center sm:items-end'>
-                <div className='flex items-center gap-4'>
-                  <p className="text-sm text-muted-foreground whitespace-nowrap">
-                    &copy; {new Date().getFullYear()} {name}. All rights reserved.
-                  </p>
+                
+                {/* 第一行：版权信息 */}
+                <p className="text-sm text-muted-foreground whitespace-nowrap">
+                  &copy; {new Date().getFullYear()} {name}. All rights reserved.
+                </p>
+
+                {/* 第二行：社交图标和主题切换按钮的容器 */}
+                <div className='mt-4 flex flex-row items-center gap-4'>
+                  <SocialLinks />
                   <ThemeToggle />
                 </div>
-                <SocialLinks className='mt-4'/>
+
               </div>
+              {/* --- 到这里结束 --- */}
 
             </div>
           </ContainerInner>

@@ -44,6 +44,7 @@ export default async function Home() {
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">
           {/* left column */}
           {/* blog */}
+{/*
           <div className="flex flex-col gap-16">
             {blogList.map((blog: BlogType) => (
               <BlogCard key={blog.slug} blog={blog}/>
@@ -52,7 +53,7 @@ export default async function Home() {
               <ChevronRightIcon className="ml-1 h-4 w-4 stroke-current" />
             </Link>
           </div>
-
+*/}
           {/* right column */}
             <Feed />
         </div>

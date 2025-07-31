@@ -33,7 +33,7 @@ export type SocialLinkType = {
   href: string,
   external?: boolean
 }
-{/*
+
 export const socialLinks: Array<SocialLinkType> = [
   {
     name: 'X',
@@ -66,7 +66,7 @@ export const socialLinks: Array<SocialLinkType> = [
     external: true
   }
 ]
-*/}
+
 // https://simpleicons.org/
 export const techIcons = [
   "/icons/apple.svg",

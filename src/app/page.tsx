@@ -34,7 +34,6 @@ export default async function Home() {
       <Container className="mt-9">
         {/* personal info */}
         <div className="mb-10 grid grid-cols-1 md:grid-cols-2">
-{/*
           <div className='md:mt-20'>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl opacity-80">
               {headline}
@@ -42,10 +41,12 @@ export default async function Home() {
             <p className="mt-6 text-base text-muted-foreground">
               {introduction}
             </p>
+{/*
             <SocialLinks className='md:mt-24'/>
-          </div>
 // 隐藏首页个人介绍与技术云图标之间的社交图标行
 */}
+          </div>
+
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">
             <IconCloud iconSlugs={techIcons} />
           </div>

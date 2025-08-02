@@ -40,6 +40,7 @@ export function Footer() {
                   <p className="text-sm text-muted-foreground">
                     &copy; {new Date().getFullYear()} {name}. All rights reserved.
                   </p>
+                  <ThemeToggle />
                 </div>
                 <SocialLinks className='mt-0'/>
               </div>
@@ -98,6 +99,7 @@ export function Footer() {
                   <ThemeToggle />
                 </div>
                 <div>
+                <ThemeToggle />
                 <SocialLinks className='mt-0'/>
                 </div>
               </div>

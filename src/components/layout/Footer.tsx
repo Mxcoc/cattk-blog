@@ -81,30 +81,24 @@ export function Footer() {
       <ContainerOuter>
         <div className="border-t border-muted pb-10 pt-10">
           <ContainerInner>
-            {/* 主容器：
-              - 默认(手机): 垂直堆叠 (flex-col), 内容居中 (items-center)
-              - sm及以上(桌面): 水平排列 (sm:flex-row), 内容垂直居中 (sm:items-center)
+            {/* 主容器 - 恢复您最初的设定，仅做微调
+              - 默认(手机): 垂直堆叠 (flex-col), 居中 (items-center)
+              - sm及以上(桌面): 水平排列 (sm:flex-row), 两端对齐 (justify-between), 顶部对齐 (sm:items-start)
             */}
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
-
-              {/* 左侧：导航链接 */}
+            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-start">
+              
+              {/* 左侧：导航链接 (保持不变) */}
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium">
                 {footerItems.map((item) => (
                   <NavLink key={item.name} href={item.href}>{item.name}</NavLink>
                 ))}
               </div>
 
-              {/* 核心修改：弹簧式空白块
-                - 默认(手机): 隐藏 (hidden)
-                - sm及以上(桌面): 显示为块 (sm:block) 并自动伸展占满所有可用空间 (sm:flex-grow)
-              */}
-              <div className="hidden sm:block sm:flex-grow" />
-
-              {/* 右侧：版权和社交图标
+              {/* 右侧：版权和社交图标 (这是唯一的、关键的修改点)
                 - 默认(手机): 垂直堆叠 (flex-col), 内容居中 (items-center)
                 - sm及以上(桌面): 内容靠右对齐 (sm:items-end)
               */}
-              <div className="flex flex-col items-center gap-2 sm:items-end">
+              <div className="flex flex-col items-center gap-4 sm:items-end">
                 <p className="text-sm text-muted-foreground">
                   {'© '}{new Date().getFullYear()} {name}{'. All rights reserved.'}
                 </p>
@@ -118,4 +112,3 @@ export function Footer() {
     </footer>
   )
 }
-

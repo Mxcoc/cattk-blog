@@ -40,8 +40,8 @@ export function Footer() {
                   <p className="text-sm text-muted-foreground">
                     &copy; {new Date().getFullYear()} {name}. All rights reserved.
                   </p>
-                  // 注释掉页脚主题切换按钮
-                  // <ThemeToggle />
+//                  注释掉页脚主题切换按钮
+//                  <ThemeToggle />
                 </div>
                 <SocialLinks className='mt-0'/>
               </div>

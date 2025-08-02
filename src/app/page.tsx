@@ -39,6 +39,12 @@ export default async function Home() {
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">
             <IconCloud iconSlugs={techIcons} />
           </div>
+            {/* 新增代码: 在这里添加按钮 */}
+            {/* 您可以修改按钮的文字和链接 (href) */}
+            <div className="mt-8 flex gap-x-4">
+              <ActionButton href="/contact">联系我</ActionButton>
+              <ActionButton href="/about">了解更多</ActionButton>
+            </div>
         </div>
 
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">

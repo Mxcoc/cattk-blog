@@ -32,6 +32,7 @@ export default async function Home() {
       <Container className="mt-9">
         {/* personal info */}
         <div className="mb-10 grid grid-cols-1 md:grid-cols-2">
+{/*
           <div className='md:mt-20'>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl opacity-80">
               {headline}
@@ -41,14 +42,15 @@ export default async function Home() {
             </p>
             <SocialLinks className='md:mt-24'/>
           </div>
+*/}
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">
             <IconCloud iconSlugs={techIcons} />
           </div>
             {/* 新增代码: 在这里添加按钮 */}
             {/* 您可以修改按钮的文字和链接 (href) */}
             <div className="mt-8 flex gap-x-4">
-              <ActionButton href="/contact">联系我</ActionButton>
-              <ActionButton href="/about">了解更多</ActionButton>
+              <ActionButton href="/blogs">我的博客</ActionButton>
+              <ActionButton href="/memos">我的动态</ActionButton>
             </div>
         </div>
 

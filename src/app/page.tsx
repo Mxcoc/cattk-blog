@@ -1,23 +1,30 @@
 
 import { Container } from '@/components/layout/Container'
-
 import Feed from '@/components/home/Feed'
-
 import SocialLinks from '@/components/home/SocialLinks'
 import { headline, introduction } from '@/config/infoConfig'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { getAllBlogs, type BlogType } from '@/lib/blogs'
-
 import { techIcons, } from '@/config/infoConfig'
-
 import { CustomIcon } from '@/components/shared/CustomIcon'
 import IconCloud from "@/components/ui/icon-cloud";
-
 import Link from 'next/link'
 import { ChevronRightIcon } from 'lucide-react'
 
-
-
+import { ChevronRightIcon } from 'lucide-react'
+// 首页按钮定义
+const ActionButton = ({ href, children }: { href: string, children: React.ReactNode }) => {
+  return (
+    <Link
+      href={href}
+      className="inline-block rounded-md bg-neutral-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-neutral-700 dark:bg-neutral-200 dark:text-neutral-800 dark:hover:bg-white"
+    >
+      {children}
+    </Link>
+  )
+}
+export default async function Home() {
+// 以上按钮定义
 export default async function Home() {
   let blogList = (await getAllBlogs()).slice(0, 10)
   // console.log('blogList: ', blogList)

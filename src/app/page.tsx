@@ -11,7 +11,6 @@ import IconCloud from "@/components/ui/icon-cloud";
 import Link from 'next/link'
 import { ChevronRightIcon } from 'lucide-react'
 
-import { ChevronRightIcon } from 'lucide-react'
 // 首页按钮定义
 const ActionButton = ({ href, children }: { href: string, children: React.ReactNode }) => {
   return (
@@ -23,8 +22,7 @@ const ActionButton = ({ href, children }: { href: string, children: React.ReactN
     </Link>
   )
 }
-export default async function Home() {
-// 以上按钮定义
+// 以上按钮定义啊
 export default async function Home() {
   let blogList = (await getAllBlogs()).slice(0, 10)
   // console.log('blogList: ', blogList)

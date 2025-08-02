@@ -22,7 +22,7 @@ const ActionButton = ({ href, children }: { href: string, children: React.ReactN
     </Link>
   )
 }
-// 以上按钮定义啊
+// 以上按钮定义
 export default async function Home() {
   let blogList = (await getAllBlogs()).slice(0, 10)
   // console.log('blogList: ', blogList)

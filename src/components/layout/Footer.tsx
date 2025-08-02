@@ -97,7 +97,9 @@ export function Footer() {
                   </p>
                   <ThemeToggle />
                 </div>
+                <div>
                 <SocialLinks className='mt-0'/>
+                </div>
               </div>
             </div>
           </ContainerInner>

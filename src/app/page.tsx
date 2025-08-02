@@ -12,11 +12,12 @@ import Link from 'next/link'
 import { ChevronRightIcon } from 'lucide-react'
 
 // 首页按钮定义
+// 更新后的按钮组件
 const ActionButton = ({ href, children }: { href: string, children: React.ReactNode }) => {
   return (
     <Link
       href={href}
-      className="inline-block rounded-md bg-neutral-800 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-neutral-700 dark:bg-neutral-200 dark:text-neutral-800 dark:hover:bg-white"
+      className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       {children}
     </Link>
@@ -49,10 +50,11 @@ export default async function Home() {
           </div>
             {/* 新增代码: 在这里添加按钮 */}
             {/* 您可以修改按钮的文字和链接 (href) */}
-          <div className="mt-8 flex gap-x-4">
-            <ActionButton href="/blogs">我的博客</ActionButton>
-            <ActionButton href="/memos">我的动态</ActionButton>
-          </div>
+            <div className="mt-8 flex gap-x-4">
+              <ActionButton href="/blogs">我的博客</ActionButton>
+              <ActionButton href="/memos">我的动态</ActionButton>
+              <ActionButton href="/about">关于我</ActionButton>
+            </div>
         </div>
 
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">

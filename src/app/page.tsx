@@ -42,16 +42,17 @@ export default async function Home() {
             </p>
             <SocialLinks className='md:mt-24'/>
           </div>
+// 隐藏首页个人介绍与技术云图标之间的社交图标行
 */}
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">
             <IconCloud iconSlugs={techIcons} />
           </div>
             {/* 新增代码: 在这里添加按钮 */}
             {/* 您可以修改按钮的文字和链接 (href) */}
-            <div className="mt-8 flex gap-x-4">
-              <ActionButton href="/blogs">我的博客</ActionButton>
-              <ActionButton href="/memos">我的动态</ActionButton>
-            </div>
+          <div className="mt-8 flex gap-x-4">
+            <ActionButton href="/blogs">我的博客</ActionButton>
+            <ActionButton href="/memos">我的动态</ActionButton>
+          </div>
         </div>
 
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">

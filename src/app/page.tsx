@@ -12,18 +12,16 @@ import Link from 'next/link'
 import { ChevronRightIcon } from 'lucide-react'
 
 // 首页按钮定义
-
 const ActionButton = ({ href, children }: { href: string, children: React.ReactNode }) => {
   return (
     <Link
       href={href}
-      className="inline-block rounded-md bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm transition-colors hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="inline-block rounded-md bg-blue-100 px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm transition-colors hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       {children}
     </Link>
   )
 }
-
 // 以上首页按钮定义
 
 export default async function Home() {
@@ -47,21 +45,17 @@ export default async function Home() {
 // 隐藏首页个人介绍与技术云图标之间的社交图标行
 */}
           </div>
-
           <div className="relative flex size-full items-center justify-center overflow-hidden w-full px-20 md:px-0 md:w-2/3 ml-auto md:mr-8">
             <IconCloud iconSlugs={techIcons} />
           </div>
             {/* 新增代码: 在这里添加按钮 */}
             {/* 您可以修改按钮的文字和链接 (href) */}
-
             <div className="mt-8 flex gap-x-4">
               <ActionButton href="/blogs">我的博客</ActionButton>
               <ActionButton href="/memos">我的动态</ActionButton>
               <ActionButton href="/about">关于我</ActionButton>
             </div>
-
         </div>
-
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-10 lg:max-w-none lg:grid-cols-1 pb-4">
           {/* left column */}
           {/* blog */}

@@ -1,4 +1,4 @@
-
+{/*
 import Link from 'next/link'
 import { ContainerInner, ContainerOuter } from '@/components/layout/Container'
 import { footerItems } from '@/config/siteConfig'
@@ -43,6 +43,62 @@ export function Footer() {
                 </div>
                 <SocialLinks className='mt-0'/>
               </div>
+            </div>
+          </ContainerInner>
+        </div>
+      </ContainerOuter>
+    </footer>
+  )
+}
+*/}
+
+import Link from 'next/link'
+import { ContainerInner, ContainerOuter } from '@/components/layout/Container'
+import { footerItems } from '@/config/siteConfig'
+import { name } from '@/config/infoConfig'
+import SocialLinks from '@/components/home/SocialLinks'
+
+function NavLink({
+  href,
+  children,
+}: {
+  href: string
+  children: React.ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="transition hover:text-primary"
+    >
+      {children}
+    </Link>
+  )
+}
+
+export function Footer() {
+  return (
+    <footer className="mt-6 flex-none">
+      <ContainerOuter>
+        <div className="border-t border-muted pb-10 pt-10">
+          <ContainerInner>
+            {/* 主容器：小屏幕堆叠，大屏幕并排 */}
+            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+
+              {/* 左侧：导航链接 */}
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium">
+                {footerItems.map((item) => (
+                  <NavLink key={item.name} href={item.href}>{item.name}</NavLink>
+                ))}
+              </div>
+
+              {/* 右侧：版权和社交图标 */}
+              <div className="flex flex-col items-center gap-4 sm:items-end">
+                <p className="text-sm text-muted-foreground">
+                  {'© '}{new Date().getFullYear()} {name}{'. All rights reserved.'}
+                </p>
+                <SocialLinks />
+              </div>
+
             </div>
           </ContainerInner>
         </div>
